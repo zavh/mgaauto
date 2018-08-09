@@ -86,7 +86,27 @@ class DashDat{
     $this->dailyDat = $dailyDat;
     $this->month = $month;
   }
-
+	public function getDonut(){
+		$recoveredRecords = 0;
+		$unInvoicedRecords = 0;
+		$invoicedRecords = 0;
+		for($i=1;$i<4;$i++){
+			$recoveredRecords += $this->recovered[$i]['count'];
+			$unInvoicedRecords += $this->unInvoiced[$i]['count'];
+			$invoicedRecords += $this->invoiced[$i]['count'];
+		}
+		return $invoicedRecords.",".$unInvoicedRecords.",".$recoveredRecords;
+	}
+	public function getPie(){
+		$cashAmount = $this->recovered[1]['amount'];
+		$paidAmount = 0;
+		$pendingAmount = 0;
+		for($i=2;$i<4;$i++){
+			$paidAmount += $this->recovered[$i]['amount'];
+			$pendingAmount += ($this->unInvoiced[$i]['amount'] + $this->invoiced[$i]['amount']);
+		}
+		return $cashAmount.",".$paidAmount.",".$pendingAmount;
+	}
   private function init($arr){
     for($i=1;$i<4;$i++){
       $arr[$i]['amount'] = 0;
@@ -140,7 +160,7 @@ class DashDat{
     }
     foreach ($dd as $ddate => $valArr) {
       for($i=1;$i<4;$i++){
-        $datArr[$i]['amString'] .= ($valArr[$i]['amount']/1000).",";
+        $datArr[$i]['amString'] .= ($valArr[$i]['amount']).",";
         $datArr[$i]['paxString'] .= $valArr[$i]['pax'].",";
         $datArr[$i]['reqString'] .= $valArr[$i]['request'].",";
       }

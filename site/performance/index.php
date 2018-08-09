@@ -37,56 +37,10 @@
 			$reportExists = false;
 			$msg = "Your search criteria $td is converted into $tdReadable.<br>No record exists for that period.";
 		}
-		else{ //MAIN ENGINE
-			$dashObj = new DashDat($rd, $tdReadable);
-
-			$monthSummary['total'] = 0;
-			for($i=1;$i<4;$i++){
-				$monthSummary['total'] += $dashObj->recovered[$i]['amount'] +
-																	$dashObj->unInvoiced[$i]['amount'] +
-																	$dashObj->invoiced[$i]['amount'];
-			}
-			//echo $monthSummary['total'];
-			$monthSummary['cash'] = $dashObj->recovered[1]['amount'];
-			$monthSummary['invoice'] = $monthSummary['total'] - $dashObj->recovered[1]['amount'];
-			$monthSummary['recovered'] = $dashObj->recovered[2]['amount'] + $dashObj->recovered[3]['amount'];
-			$monthSummary['pending_payment'] = $monthSummary['invoice'] - $monthSummary['recovered'];
-			$monthSummary['invoice_raised'] = count($dashObj->invoices[1]) + count($dashObj->invoices[2]) + count($dashObj->invoices[3]);
-			$monthSummary['invoice_paid'] = 0;
-			if(isset($dashObj->invoicePaid[2]))
-				$monthSummary['invoice_paid'] += count($dashObj->invoicePaid[2]);
-			if(isset($dashObj->invoicePaid[3]))
-				$monthSummary['invoice_paid'] += count($dashObj->invoicePaid[3]);
-			$monthSummary['invoice_unpaid'] = $monthSummary['invoice_raised'] - $monthSummary['invoice_paid'];
-			$monthSummary['uninv_records'] = $dashObj->uinreccount;
-			$monthSummary['total_pax'] = $dashObj->paxArr[1]+$dashObj->paxArr[2]+$dashObj->paxArr[3];
-			$monthSummary['total_rec'] = $dashObj->recArr[1]+$dashObj->recArr[2]+$dashObj->recArr[3];
-
-			for($i=1;$i<4;$i++){
-				$monthSummary['stream'][$i]['amount'] =
-					$dashObj->recovered[$i]['amount'] +
-					$dashObj->unInvoiced[$i]['amount'] +
-					$dashObj->invoiced[$i]['amount'];
-				$monthSummary['stream'][$i]['recovered'] = $dashObj->recovered[$i]['amount'];
-				$monthSummary['stream'][$i]['pax'] = $dashObj->paxArr[$i];
-				$monthSummary['stream'][$i]['request'] = $dashObj->recArr[$i];
-				$monthSummary['stream'][$i]['uninvcount'] = $dashObj->unInvoiced[$i]['count'];
-				if(isset($dashObj->clients[$i]))
-					$monthSummary['stream'][$i]['noclients'] = count($dashObj->clients[$i]);
-				else $monthSummary['stream'][$i]['noclients'] = null;
-				$monthSummary['stream'][$i]['raised_invoice'] = count($dashObj->invoices[$i]);
-				if(isset($dashObj->invoicePaid[$i]))
-					$monthSummary['stream'][$i]['invoice_paid'] = count($dashObj->invoicePaid[$i]);
-				else $monthSummary['stream'][$i]['invoice_paid'] = null;
-				$monthSummary['stream'][$i]['uninv_records'] = $dashObj->unInvoiced[$i]["count"];
-				$monthSummary['stream'][$i]['revgen'] = ($monthSummary['stream'][$i]['amount']/$monthSummary['total'])*100;
-			}
-			$monthSummary['chartlable'] = $dashObj->getChartLabel();
-			$monthSummary['streamMonthDat'] = $dashObj->getChartDat();
-
-//			echo "<pre>";
-//			print_r($monthSummary);
-//			echo "</pre>";
+		else{ //MAIN ENGINE FOR DB
+			$monthSummary = genFromDb($rd, $tdReadable);
+			$formattedData = json_encode($monthSummary);
+			//echo $formattedData;
 		}
 	}
 
@@ -146,3 +100,57 @@
 
 		autocomplete(document.getElementById("reportmonth"), jsrepdates);
 </script>
+<?php
+function genFromDb($rd, $tdReadable){
+	$dashObj = new DashDat($rd, $tdReadable);
+
+	$monthSummary['total'] = 0;
+	for($i=1;$i<4;$i++){
+		$monthSummary['total'] += $dashObj->recovered[$i]['amount'] +
+															$dashObj->unInvoiced[$i]['amount'] +
+															$dashObj->invoiced[$i]['amount'];
+	}
+	//echo $monthSummary['total'];
+	$monthSummary['cash'] = $dashObj->recovered[1]['amount'];
+	$monthSummary['invoice'] = $monthSummary['total'] - $dashObj->recovered[1]['amount'];
+	$monthSummary['recovered'] = $dashObj->recovered[2]['amount'] + $dashObj->recovered[3]['amount'];
+	$monthSummary['pending_payment'] = $monthSummary['invoice'] - $monthSummary['recovered'];
+	$monthSummary['invoice_raised'] = count($dashObj->invoices[1]) + count($dashObj->invoices[2]) + count($dashObj->invoices[3]);
+	$monthSummary['invoice_paid'] = 0;
+	if(isset($dashObj->invoicePaid[2]))
+		$monthSummary['invoice_paid'] += count($dashObj->invoicePaid[2]);
+	if(isset($dashObj->invoicePaid[3]))
+		$monthSummary['invoice_paid'] += count($dashObj->invoicePaid[3]);
+	$monthSummary['invoice_unpaid'] = $monthSummary['invoice_raised'] - $monthSummary['invoice_paid'];
+	$monthSummary['uninv_records'] = $dashObj->uinreccount;
+	$monthSummary['total_pax'] = $dashObj->paxArr[1]+$dashObj->paxArr[2]+$dashObj->paxArr[3];
+	$monthSummary['total_rec'] = $dashObj->recArr[1]+$dashObj->recArr[2]+$dashObj->recArr[3];
+
+	for($i=1;$i<4;$i++){
+		$monthSummary['stream'][$i]['amount'] =
+			$dashObj->recovered[$i]['amount'] +
+			$dashObj->unInvoiced[$i]['amount'] +
+			$dashObj->invoiced[$i]['amount'];
+		$monthSummary['stream'][$i]['recovered'] = $dashObj->recovered[$i]['amount'];
+		$monthSummary['stream'][$i]['pax'] = $dashObj->paxArr[$i];
+		$monthSummary['stream'][$i]['request'] = $dashObj->recArr[$i];
+		$monthSummary['stream'][$i]['uninvcount'] = $dashObj->unInvoiced[$i]['count'];
+		if(isset($dashObj->clients[$i]))
+			$monthSummary['stream'][$i]['noclients'] = count($dashObj->clients[$i]);
+		else $monthSummary['stream'][$i]['noclients'] = null;
+		$monthSummary['stream'][$i]['raised_invoice'] = count($dashObj->invoices[$i]);
+		if(isset($dashObj->invoicePaid[$i]))
+			$monthSummary['stream'][$i]['invoice_paid'] = count($dashObj->invoicePaid[$i]);
+		else $monthSummary['stream'][$i]['invoice_paid'] = null;
+		$monthSummary['stream'][$i]['uninv_records'] = $dashObj->unInvoiced[$i]["count"];
+		$monthSummary['stream'][$i]['revgen'] = ($monthSummary['stream'][$i]['amount']/$monthSummary['total'])*100;
+	}
+	$monthSummary['chartlable'] = $dashObj->getChartLabel();
+	$monthSummary['streamMonthDat'] = $dashObj->getChartDat();
+	$monthSummary['donut']= $dashObj->getDonut();
+	$monthSummary['pie']= $dashObj->getPie();
+
+	return $monthSummary;
+}
+
+ ?>

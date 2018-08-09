@@ -92,7 +92,8 @@ if(count(get_included_files()) ==1)
 									labels: ["Invoiced","Uninvoiced","Paid"],
 									datasets: [{
 
-										data: [15, 20, 23],
+										data: [	<?php echo $monthSummary['donut'];?>
+										],
 										backgroundColor: [
 											'rgba(0, 0, 0, 0.4)',
 											'rgba(0, 0, 0, 0.6)',
@@ -148,11 +149,11 @@ if(count(get_included_files()) ==1)
 							labels: ["Cash","Paid","Pending"],
 							datasets: [{
 
-								data: [75000, 25900, 68000],
+								data: [<?php echo $monthSummary['pie'];?>],
 								backgroundColor: [
-									'rgba(0, 0, 0, 0.2)',
-									'rgba(0, 0, 0, 0.4)',
-									'rgba(0, 0, 0, 0.6)',
+									'rgba(155, 0, 0, 0.4)',
+									'rgba(0, 15, 0, 0.4)',
+									'rgba(0, 0, 15, 0.5)',
 								],
 								borderColor: [
 									'rgba(255,255,255,0.5)',
@@ -248,6 +249,7 @@ if(count(get_included_files()) ==1)
 							datasets: [{
 								label: 'Spot Amount',
 								stack: 'Stack 0',
+								yAxisID: 'y-axis-0',
 								data: [<?php echo $monthSummary['streamMonthDat'][1]['amString'];?>],
 								backgroundColor: 'rgba(0,45,0,0.2)',
 								fill:true,
@@ -256,6 +258,7 @@ if(count(get_included_files()) ==1)
 							{
 								label: 'Card Amount',
 								stack: 'Stack 0',
+								yAxisID: 'y-axis-0',
 								data: [<?php echo $monthSummary['streamMonthDat'][2]['amString'];?>],
 								backgroundColor: 'rgba(28, 148, 191, 0.3)',
 								fill:true,
@@ -264,6 +267,7 @@ if(count(get_included_files()) ==1)
 							{
 								label: 'Due Amount',
 								stack: 'Stack 0',
+								yAxisID: 'y-axis-0',
 								data: [<?php echo $monthSummary['streamMonthDat'][3]['amString'];?>],
 								backgroundColor: 'rgba(28, 148, 191, 0.8)',
 								fill:true,
@@ -272,6 +276,7 @@ if(count(get_included_files()) ==1)
 							{
 								label: 'Spot Pax',
 								stack: 'Stack 1',
+								yAxisID: 'y-axis-1',
 								data: [<?php echo $monthSummary['streamMonthDat'][1]['paxString'];?>],
 								backgroundColor: 'rgba(0,45,0,0.3)',
 								fill:true,
@@ -280,6 +285,7 @@ if(count(get_included_files()) ==1)
 							{
 								label: 'Card Pax',
 								stack: 'Stack 1',
+								yAxisID: 'y-axis-1',
 								data: [<?php echo $monthSummary['streamMonthDat'][2]['paxString'];?>],
 								backgroundColor: 'rgba(28, 148, 191, 0.6)',
 								fill:true,
@@ -288,32 +294,9 @@ if(count(get_included_files()) ==1)
 							{
 								label: 'Due Pax',
 								stack: 'Stack 1',
+								yAxisID: 'y-axis-1',
 								data: [<?php echo $monthSummary['streamMonthDat'][3]['paxString'];?>],
 								backgroundColor: 'rgba(28, 148, 191, 0.9)',
-								fill:true,
-								borderWidth: 0,
-							},
-							{
-								label: 'Spot Request',
-								stack: 'Stack 2',
-								data: [<?php echo $monthSummary['streamMonthDat'][1]['reqString'];?>],
-								backgroundColor: 'rgba(0,45,0,0.2)',
-								fill:true,
-								borderWidth: 0,
-							},
-							{
-								label: 'Card Request',
-								stack: 'Stack 2',
-								data: [<?php echo $monthSummary['streamMonthDat'][2]['reqString'];?>],
-								backgroundColor: 'rgba(28, 148, 191, 0.3)',
-								fill:true,
-								borderWidth: 0,
-							},
-							{
-								label: 'Due Request',
-								stack: 'Stack 2',
-								data: [<?php echo $monthSummary['streamMonthDat'][3]['reqString'];?>],
-								backgroundColor: 'rgba(28, 148, 191, 0.8)',
 								fill:true,
 								borderWidth: 0,
 							},
@@ -348,17 +331,35 @@ if(count(get_included_files()) ==1)
 
 								}],
 								yAxes: [{
+									type:'linear',
+									display: true,
+									position: 'left',
+									id: 'y-axis-0',
 									stacked:true,
 									gridLines:{
 										display: false,
 										drawBorder: false,
 									},
 									ticks:{
-										display:false,
+										display:true,
 										beginAtZero: true
 									}
-
-								}]
+								},{
+									type:'linear',
+									display: true,
+									position: 'right',
+									id: 'y-axis-1',
+									stacked:true,
+									gridLines:{
+										display: true,
+										drawBorder: false,
+									},
+									ticks:{
+										display:true,
+										beginAtZero: true
+									}
+								}
+							]
 							}
 						}
 					});
