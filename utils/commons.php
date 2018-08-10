@@ -17,4 +17,10 @@ function randPassGen(){
 	$tempPass .= $chars[2][rand(0,(strlen($chars[2])-1))];
 	return $tempPass;
 }
+
+function monthUpdated($con, $tdReadable, $status){
+	$mrObj = new DbTables($con, "monthreport");
+	$idvalue = "'".date("Y-m-01",strtotime($tdReadable))."'";
+	$mrObj->updateRecord('update_status', $status, 'report_month', $idvalue);
+}
 ?>
