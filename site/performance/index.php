@@ -3,6 +3,7 @@
 	include(TEMPLATEDIR."/header.php");
 	include(TEMPLATEDIR."/mainmenu.php");
 	include(CLASSDIR."/class_dboard_create.php");
+	include(UTILSDIR."/commons.php");
 
 	if(isset($_POST['targetmonth'])){
 		$td = $_POST['targetmonth'];
@@ -14,10 +15,10 @@
 	$tdYYYY = date("Y",strtotime($td));
 	$startdate = date("Y-m-01",strtotime($td));
 	$enddate = date("Y-m-t", strtotime($td));
-	$targetfile = PERFORMANCEREPORTDIR."/".date("Y_m",strtotime($td))."_performnace.json";
+	$targetfile = PERFORMANCEREPORTDIR."/"."monthreport-".date("Y-m",strtotime($tdReadable)).".json";
 	$reportExists = true;
 	$msg = '';
-	//echo $tdReadable;
+
 	if($tdYYYY == '1970'){
 		$reportExists = false;
 		$msg = "<strong>'$td'</strong> is not a valid date or format. <br>
@@ -26,29 +27,41 @@
 				You can also simply put the name to get the report of the month of THIS year. For example, putting Jan or January will provide reports of January ".date("Y");
 	}
 	else if(file_exists($targetfile)){
+		//Check if there are any updates
+		$mrObj = new DbTables($con, "monthreport");
+		$field = array('update_status');
+		$value = date("Y-m-01",strtotime($tdReadable));
+		$id = "report_month";
+		$descision = $mrObj->valueLookUp($field, $value, $id);
+
+		if($descision[0]['update_status'] == 1){
+			//Update status 1 indicates there are updates to the month data
+			//In such case, whole month will be read from DB and new JSON file will be written
+			$rd = monthArrayDB($con, $startdate, $enddate);
+			$monthSummary = genFromDb($rd, $tdReadable);
+			monthUpdated($con, $tdReadable, 0);
+		}
+		else
 		//Start populating data
+		$monthSummary = getJSONobj($targetfile);
 	}
 	else{
 		// Start reading DB, create JSON file and send to read the newly created JSON
-		$sql = "SELECT * from requests LEFT JOIN invoice on requests.invoice = invoice.inv_id WHERE requests.flight_date BETWEEN '$startdate' AND '$enddate' ";
-		$repObj = new DBTables($con,"requests");
-		$rd = $repObj->getSqlResult($sql);
+		$rd = monthArrayDB($con, $startdate, $enddate);
 		if(count($rd) == 0){
 			$reportExists = false;
 			$msg = "Your search criteria $td is converted into $tdReadable.<br>No record exists for that period.";
 		}
 		else{ //MAIN ENGINE FOR DB
-			$monthSummary = genFromDb($rd, $tdReadable);
-			$formattedData = json_encode($monthSummary);
-			//echo $formattedData;
+			//Generating month summary
+			$monthSummary = genFromDb($rd, $tdReadable); //Generating month summary
+			//Registering the newly generated repoort in DB with an update_status of 0
+			registerMonthData($con, $tdReadable); //update_status 0 indicates no update
 		}
 	}
-
 ?>
 <script src="<?php echo JSDIR;?>/Chart.bundle.min.js"></script>
-	<!-- Top menu starts-->
 
-	<!-- Top menu ends-->
 <!-- Top Panel to choose date -->
 <div class="w3-row w3-tiny w3-dark-gray">
 	<div class="w3-row">
@@ -96,10 +109,11 @@
 }
 </style>
 <script>
-		var jsrepdates = ["Jan 2018","Feb 2018","Mar 2018","Apr 2018","May 2018","Jun 2018","Jul 2018","Aug 2018","Sep 2018","Oct 2018","Nov 2018","Dec 2018"];;
-
+		var jsrepdates = ["Jan 2018","Feb 2018","Mar 2018","Apr 2018","May 2018","Jun 2018","Jul 2018","Aug 2018","Sep 2018","Oct 2018","Nov 2018","Dec 2018"];
 		autocomplete(document.getElementById("reportmonth"), jsrepdates);
 </script>
+
+
 <?php
 function genFromDb($rd, $tdReadable){
 	$dashObj = new DashDat($rd, $tdReadable);
@@ -150,7 +164,34 @@ function genFromDb($rd, $tdReadable){
 	$monthSummary['donut']= $dashObj->getDonut();
 	$monthSummary['pie']= $dashObj->getPie();
 
+// Saving the data in json format in designated directory
+	$formattedData = json_encode($monthSummary);
+	$filename = "monthreport-".date("Y-m",strtotime($tdReadable)).".json";
+	$handle = fopen(PERFORMANCEREPORTDIR."/".$filename,'w+');
+	fwrite($handle,$formattedData);
+	fclose($handle);
+// Saving completed
 	return $monthSummary;
 }
 
- ?>
+function getJSONobj($jsonfile){
+	$str = file_get_contents($jsonfile);
+	$json = json_decode($str, true);
+	return $json;
+}
+
+function registerMonthData($con, $tdReadable){
+	$repository_name = "monthreport-".date("Y-m",strtotime($tdReadable)).".json";
+	$report_month = date("Y-m-01",strtotime($tdReadable));
+	$mrObj = new DbTables($con, "monthreport");//Month Report Object
+	$mrRow = array('report_month' => $report_month, 'repository_name'=>$repository_name,'update_status'=>0);
+	$mrObj->insertRecord($mrRow);
+}
+
+function monthArrayDB($con, $startdate, $enddate){
+	$sql = "SELECT * from requests LEFT JOIN invoice on requests.invoice = invoice.inv_id WHERE requests.flight_date BETWEEN '$startdate' AND '$enddate' ";
+	$repObj = new DBTables($con,"requests");
+	$rd = $repObj->getSqlResult($sql);
+	return $rd;
+}
+?>
