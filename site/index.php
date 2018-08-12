@@ -1,4 +1,4 @@
 <?php
 include("../config/serverconfig.php");
-header ('Location:'.MAINHOST."/home.php");
+header ('Location:'.MAINHOST."/index.php");
 ?>

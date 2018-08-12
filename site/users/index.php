@@ -3,17 +3,13 @@
 	include(TEMPLATEDIR."/header.php");
 	include(TEMPLATEDIR."/mainmenu.php");
 ?>
-<div class="w3-gray" style="height:100vh">
-	<!-- Top menu starts-->
-	<div class="w3-row w3-tiny w3-dark-gray">
-		<div class="w3-row" style="height:20px">
-		<div class="w3-half" id="monthreportdashTitle">
-			<span style="float:left">&nbsp;<a href="javascript:void(0)" class="nodec" onclick="w3_open()">&#9776;</a>&nbsp;</span>
-			User Management
-		</div>
-		</div>
-	</div>
-		<!-- Top menu ends-->
+<div class="w3-gray w3-row" style="min-height:100vh">
+	<!-- Top Menu Starts-->
+	<?php
+		$pagetitle = "User Management";
+		include(TEMPLATEDIR."/topmenu.php");
+	?>
+	<!-- Top Menu Ends-->
 	<div class="w3-row w3-center w3-margin">
 		<div class="w3-col m12 l4 w3-tiny">
 		<!-- New User Creation Form Starts-->

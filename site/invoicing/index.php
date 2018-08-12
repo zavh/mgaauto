@@ -61,12 +61,13 @@
 	$invtab = formatInvoiceTab($dr, $ctype); //Invoice Table
 	###########################MAIN PRESENTER TABLES FORMATTER###########################
 ?>
-	<!-- Top Menu Starts-->
 	<div class="w3-gray w3-row" style="min-height:100vh">
+	<!-- Top Menu Starts-->
 	<?php
 		$pagetitle = "Invoice and Payment Management";
 		include(TEMPLATEDIR."/topmenu.php");
-		?>
+	?>
+	<!-- Top Menu Ends-->
 		<!--###########################DIV FOR MAIN PRESENTER TABLES###########################-->
 		<div id="invrecords" style="overflow:hidden;top:20px;position:relative;z-index:1" class=" w3-row">
 			<div class='w3-row-padding w3-twothird'>
@@ -82,7 +83,6 @@
 		</div>
 		<!--###########################DIV FOR MAIN PRESENTER TABLES###########################-->
 
-		<!-- Top Menu Starts-->
 		<div class="w3-card-4 w3-display-container report-selector" id="reportform">
 			  <!-- Invoice Form Starts-->
 			  <form method="POST" action="" autocomplete="off">

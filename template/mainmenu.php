@@ -6,7 +6,7 @@ if(count(get_included_files()) ==1) {
 }
 $current_page = str_replace("index.php",'',WEBSERVER.$_SERVER['PHP_SELF']);
 $links = array(
-			"HOME"=>MAINHOST."/home.php",
+			"DAILY REPORTS"=>MAINHOST."/site/dailyreport/",
 			"INVOICING"=>MAINHOST."/site/invoicing/",
 			"PERFORMANCE"=>MAINHOST."/site/performance/",
 			"USER MANAGEMENT"=>MAINHOST."/site/users/"
@@ -35,8 +35,8 @@ foreach($links as $item=>$link){
 	<div class="w3-display-middle" style="width:80px;height:80px;border-radius:100%;background:#eee;">
 		<a href="site/users/"><img src=""></a>
 	</div>
-	<div class="w3-display-bottommiddle" id="sessionData">Logged in as <?php echo $_SESSION['uid']?></div>
   </div>
+	<div class="w3-padding" id="sessionData">Logged in as <?php echo $_SESSION['uid']?></div>
   <div style="border-bottom:0.5px solid black;border-top:0.5px solid black">
 	<a href="<?php echo MAINHOST;?>/logout.php" class="w3-bar-item w3-button">Logout</a>
 	</div>

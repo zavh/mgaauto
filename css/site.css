@@ -32,6 +32,13 @@ a.viewmode.active{
     text-decoration:none;
     outline: none;
 }
+.dot {
+    height: 12px;
+    width: 12px;
+    //background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
 .nodec:hover{color:#9fd142;}
 .dayreport{
     max-height:25vh;
@@ -152,12 +159,13 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-#monthreportdashTitle {
+.pagetitle {
     text-align:left;
-    padding-left: 3px;
-    padding-top: 3px;
+    padding-left: 2px;
+    padding-top: 2px;
+		height:20px;
 }
-#monthreportsearch { text-align:right; }
+.monthreportsearch { text-align:right; }
 
 @media only screen and (max-width: 400px) {
   .usertable-big  {display: none;}
@@ -169,14 +177,15 @@ input[type=number]::-webkit-outer-spin-button {
   .usertable-small { display: none; }  /*hide on big screens */
 }
 @media only screen and (max-width: 600px) {
-  #monthreportsearch {
+  .monthreportsearch {
       text-align:center;
       background: #555;
     }
-  #monthreportdashTitle {
+  .pagetitle {
       text-align:center;
       background: #444;
       padding-left: 0px;
-      padding-top: 0px;
+			padding-top: 0px;
+			height:auto;
     }
 }

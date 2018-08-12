@@ -33,12 +33,12 @@ function publishInvoice(dbsave){
            "invtod":invtod,
            "invctype":invctype,
            "invcname":invcname
-    } 
+    }
 
     for(var i=0;i<th.length;i++){
         objInvTab.tabheads.push(th[i].innerHTML);
     }
-    
+
     var invdat = document.getElementsByClassName("inv-dat");
     for(i=0;i<invdat.length;i++){
             var tempObj = {
@@ -50,14 +50,14 @@ function publishInvoice(dbsave){
         }
         objInvTab.tabvals.push(tempObj) ;
     }
-        
+
 	var invJSON = JSON.stringify(objInvTab);
 
-    var invoiceForm = document.createElement("form");
-	invoiceForm.target = "Invoice";
-	invoiceForm.method = "POST";
-	invoiceForm.action = "invprocessor.php";
-	
+	var invoiceForm = document.createElement("form");
+		invoiceForm.target = "Invoice";
+		invoiceForm.method = "POST";
+		invoiceForm.action = "invprocessor.php";
+
 	var invdInput = document.createElement("input");
     invdInput.type = "hidden";
     invdInput.name = "invdate";
@@ -71,7 +71,7 @@ function publishInvoice(dbsave){
     refInput.value = invref;
     invoiceForm.appendChild(refInput);
 	document.body.appendChild(invoiceForm);
-    
+
 	var addrInput = document.createElement("input");
     addrInput.type = "hidden";
     addrInput.name = "invaddr";
@@ -85,21 +85,21 @@ function publishInvoice(dbsave){
     subInput.value = invsub;
     invoiceForm.appendChild(subInput);
 	document.body.appendChild(invoiceForm);
-    
+
     var frdInput = document.createElement("input");
     frdInput.type = "hidden";
     frdInput.name = "invfrd";
     frdInput.value = invfrd;
     invoiceForm.appendChild(frdInput);
 	document.body.appendChild(invoiceForm);
-    
+
     var dataInput = document.createElement("input");
     dataInput.type = "hidden";
     dataInput.name = "invdat";
     dataInput.value = invJSON;
     invoiceForm.appendChild(dataInput);
-	document.body.appendChild(invoiceForm);    
-    
+	document.body.appendChild(invoiceForm);
+
     var footerInput = document.createElement("input");
     footerInput.type = "hidden";
     footerInput.name = "invftr";

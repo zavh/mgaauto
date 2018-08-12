@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<?php 
+<?php
 include($_SERVER['DOCUMENT_ROOT']."/mga/config/serverconfig.php");
 session_start();
 if(isset($_SESSION)){
 	if(isset($_SESSION['loggedin']))
 		if($_SESSION['loggedin'])
-			header ('Location:'.MAINHOST."/home.php");
+			header ('Location:'.MAINHOST."/site/dailyreport/");
 }
 ?>
 <html>
@@ -17,8 +17,8 @@ if(isset($_SESSION)){
 <body>
 
 <div class="w3-container">
-  <div class="w3-display-container" style="height:90vh;">
-    <div class="w3-display-middle">
+  <div class="w3-display-container" style="height:100vh;">
+    <div class="w3-display-middle" style="min-width:300px;">
 	  <div class="w3-card-4 w3-round-xlarge w3-small" style="overflow:hidden">
 		<div class="w3-container w3-light-blue">
 		  <h5 class="w3-center" style="font-family:Arial Narrow">APPLICATION LOGIN</h5>
@@ -34,8 +34,8 @@ if(isset($_SESSION)){
 		  <div class="w3-row w3-right w3-tiny"><button type="submit" >GO</button></div>
 		</form>
 	  </div>
-	  		
-			<?php 
+
+			<?php
 				if(isset($_GET['errno'])){
 						switch ($_GET['errno']) {
 							case '1':
@@ -53,12 +53,12 @@ if(isset($_SESSION)){
 							case '20':
 								$errmgs = "You are not loggedin";
 								echo "<input type='hidden' id='errmsg' value='$errmgs|20'>";
-								break;								
-								
+								break;
+
 							default:
 								echo $_GET['errno'];
 						}
-						
+
 				}
 			?>
 	</div>

@@ -63,26 +63,20 @@
 <script src="<?php echo JSDIR;?>/Chart.bundle.min.js"></script>
 
 <div style="height:100vh" class="w3-gray" >
-<!-- Top Panel to choose date -->
-<div class="w3-row w3-tiny w3-dark-gray">
-	<div class="w3-row">
-	<div class="w3-half" id="monthreportdashTitle">
-		<span style="float:left">&nbsp;<a href="javascript:void(0)" class="nodec" onclick="w3_open()">&#9776;</a>&nbsp;</span>
-		Monthly Performance Dashboard
-	</div>
-	<div class="w3-half" id="monthreportsearch">
-		<form method="POST" action="" autocomplete="off">
-			Search for Report:
-			<div class="autocomplete w3-white">
-				<input type="text" value="" id="reportmonth" size="10" name="targetmonth" placeholder="ex:Jul 2018">
-			</div>
-			<input type="submit" value="go">
-		</form>
-	</div>
-	</div>
-</div>
-<!-- Top Panel Ends -->
-
+<!-- Top Panel Starts-->
+<?php
+	$pagetitle = "Monthly Performance Dashboard";
+	$menuitems[0]['classes']  = "monthreportsearch";
+	$menuitems[0]['details']  = "<form method=\"POST\" action=\"\" autocomplete=\"off\">";
+	$menuitems[0]['details'] .= "<span>Search for Report: </span>";
+	$menuitems[0]['details'] .= "<div class=\"autocomplete w3-gray\">";
+	$menuitems[0]['details'] .= " <input type=\"text\" value=\"\" id=\"reportmonth\" size=\"15\" name=\"targetmonth\" placeholder=\"ex:Jul 2018\"> ";
+	$menuitems[0]['details'] .= "</div>";
+	$menuitems[0]['details'] .= " <input type=\"submit\" value=\"go\"> ";
+	$menuitems[0]['details'] .= "</form>";
+	include(TEMPLATEDIR."/topmenu.php");
+?>
+<!-- Top Panel Ends-->
 <!-- Main Panel Wrapper -->
 
 <?php

@@ -41,7 +41,7 @@ if($_POST['command'] == "changepasswd"){
 	else {
 		$pwd = password_hash($con->real_escape_string($_POST['newpassword']), PASSWORD_DEFAULT);
 		$crobj->updateRecord('pwd', $pwd, 'table_id', $_SESSION['table_id']);
-		header ('Location:'.$_SERVER['HTTP_REFERER']."?response=101&user=".$_SESSION['uid']);
+		header ('Location:'.MAINHOST."/logout.php");
 	}
 }
 if($_POST['command'] == "deleteuser"){
