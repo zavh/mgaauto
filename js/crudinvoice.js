@@ -114,8 +114,9 @@ function publishInvoice(dbsave){
     invoiceForm.appendChild(dbsaveInput);
 	document.body.appendChild(invoiceForm);
 
+		window.print();
     invoiceForm.submit();
-    window.print();
-    window.opener.location.reload(false);
-    window.close();
+    //window.print();
+    //window.opener.location.reload(false);
+    //window.close();
 }

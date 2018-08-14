@@ -19,6 +19,7 @@ else exit;
 ?>
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 	<head>
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/w3s.css">
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/autocomplete.css">
@@ -28,5 +29,5 @@ else exit;
 		<script src="<?php echo JSDIR;?>/site.js"></script>
 	</head>
 
-	<body onclick="upActivityCounter()" onload="upActivityCounter()">
+	<body onclick="upActivityCounter()" onload="upActivityCounter()" class="w3-gray">
 	<input type='hidden' id='lastActiveTime' value=0>

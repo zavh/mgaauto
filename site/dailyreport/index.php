@@ -17,19 +17,6 @@
 <style>
 .entryAction{
 }
-.billrequestpanel{
-	background-color:rgba(0,0,0,0.4);
-	height:21px;
-	padding-top:2px;
-}
-.viewmodepanel{
-	background-color:rgba(0,0,0,0.6);
-	height:21px;
-	padding-top:2px;
-}
-.repdatepanel{
-	background-color:rgba(0,0,0,0.8);
-}
 @media print {
 	#dayreportmenu {
       display :  none;
@@ -44,18 +31,19 @@
 	 <!-- Top Panel Starts-->
 	 <?php
 	 	$pagetitle = "Daily Performance Dashboard";
+		$menuid = "dayreportmenu";
 
-		$menuitems[0]['classes']  = "w3-small w3-center billrequestpanel";
+		$menuitems[0]['classes']  = "w3-small w3-center darkmenu";
 	 	$menuitems[0]['details']  = "<a href=\"javascript:void(0)\" ";
 	 	$menuitems[0]['details'] .= "onclick=\"document.getElementById('newbill').style.display='block'\" class=\"nodec\">New Bill/Request</a>";
 
-		$menuitems[1]['classes']  = "w3-small w3-center viewmodepanel";
+		$menuitems[1]['classes']  = "w3-small w3-center darkermenu";
 	 	$menuitems[1]['details']  = "Viewing Mode:";
 	 	$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-1\" class=\"viewmode active\" onclick=\"showViewMode(event, 1)\">&#x2776; </a>";
 		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-2\" class=\"viewmode\" onclick=\"showViewMode(event, 2)\">&#x2777; </a>";
 		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-3\" class=\"viewmode\" onclick=\"showViewMode(event, 3)\">&#x2778;</a>";
 
-		$menuitems[2]['classes']  = "repdatepanel";
+		$menuitems[2]['classes']  = "darkestmenu";
 	 	$menuitems[2]['details']  = "<form method=\"POST\" action=\"\" class=\"w3-center\">";
 	 	$menuitems[2]['details'] .= "<label>Report of : </label>";
 	 	$menuitems[2]['details'] .= "<input type=\"date\" name=\"reportdate\" id=\"reportdate\" required value=\"$reportdate\">";

@@ -22,28 +22,34 @@ function dateCompare(fromd, tod){
 	tr.style.display = "";
 }
 
-function showReportSelector(){
-	var x = document.getElementById("selectorshow");
+function showReportSelector(arrow){
 
-	if(x.value == "down"){
+	if(arrow == "down"){
 		document.getElementById("reportform").style.top = "0";
-		x.value = "up";
-		x.innerHTML = "&#8743;";
+    showQuerySelector('up');
 	}
-	else if(x.value == "up"){
-		document.getElementById("reportform").style.top = "-185px";
-		x.value = "down";
-		x.innerHTML = "&#8744;";
-        
-        var x = document.getElementsByClassName("spel");
-        var y = document.getElementsByClassName("els");
-        var selectBox = document.getElementById("client_type");
-        selectBox.selectedIndex = 0;
-        for(i=0;i<(x.length);i++){
-          x[i].style.display = "none";
-          y[i].disabled = true;
-        }
+	else if(arrow == "up"){
+		document.getElementById("reportform").style.top = "-300px";
+
+    var x = document.getElementsByClassName("spel");
+    var y = document.getElementsByClassName("els");
+    var selectBox = document.getElementById("client_type");
+    selectBox.selectedIndex = 0;
+    for(i=0;i<(x.length);i++){
+      x[i].style.display = "none";
+      y[i].disabled = true;
+    }
 	}
+}
+
+function showQuerySelector(arrow){
+  if(arrow == "down"){
+		document.getElementById("paidinvquery").style.top = "0";
+    showReportSelector('up');
+	}
+  else if(arrow == "up"){
+		document.getElementById("paidinvquery").style.top = "-300px";
+  }
 }
 
 function viewInvoice(archive){
@@ -64,15 +70,15 @@ function viewInvoice(archive){
     comInput.name = "command";
     comInput.value = "archive";
     invoiceForm.appendChild(comInput);
-	document.body.appendChild(invoiceForm);	
-    
+	document.body.appendChild(invoiceForm);
+
 	invoice = window.open("", "Invoice", "status=0,title=0,height=842,width=595,scrollbars=1");
-	
+
 	if (invoice) {
 		invoiceForm.submit();
 	} else {
 		alert('You must allow popups for this map to work.');
-	}	
+	}
 
 }
 
@@ -81,7 +87,7 @@ function genInvoice(ctype, ctype_id, fromd, tod){
 	invoiceForm.target = "Invoice";
 	invoiceForm.method = "POST";
 	invoiceForm.action = "invoiceparser.php";
-	
+
 	var ctypeInput = document.createElement("input");
     ctypeInput.type = "hidden";
     ctypeInput.name = "ctype";
@@ -102,28 +108,28 @@ function genInvoice(ctype, ctype_id, fromd, tod){
     fromdInput.value = fromd;
     invoiceForm.appendChild(fromdInput);
 	document.body.appendChild(invoiceForm);
-	
+
 	var todInput = document.createElement("input");
     todInput.type = "hidden";
     todInput.name = "tod";
     todInput.value = tod;
     invoiceForm.appendChild(todInput);
-	document.body.appendChild(invoiceForm);	
-	
+	document.body.appendChild(invoiceForm);
+
 	var comInput = document.createElement("input");
     comInput.type = "hidden";
     comInput.name = "command";
     comInput.value = "new";
     invoiceForm.appendChild(comInput);
-	document.body.appendChild(invoiceForm);	
-    
+	document.body.appendChild(invoiceForm);
+
 	invoice = window.open("", "Invoice", "status=0,title=0,height=842,width=595,scrollbars=1");
-	
+
 	if (invoice) {
 		invoiceForm.submit();
 	} else {
 		alert('You must allow popups for this map to work.');
-	}	
+	}
 }
 function processInvoice(){
     var fromd = document.getElementById('startdate').value;
@@ -132,7 +138,7 @@ function processInvoice(){
         alert("From date should be earlier than To Date");
         return;
     }
-    
+
     var selectBox = document.getElementById("client_type");
     var ctype = selectBox.options[selectBox.selectedIndex].value;
     var ctype_id = '';
@@ -176,7 +182,7 @@ function deleteInvoice(id, ref, command){
         commandInput.value = command;
         invoiceForm.appendChild(commandInput);
         document.body.appendChild(invoiceForm);
-        
+
         invoiceForm.submit();
     } else {
         return;
@@ -192,4 +198,11 @@ function markAsPaidInvoice(aElm, id){
     targetPayDiv.addEventListener('dblclick', function(event){
         targetPayDiv.style.display='none';
     })
+}
+
+function searchInv(e, el){
+  var x = e.which;
+  if(x == 13){
+    alert(el);
+  }
 }
