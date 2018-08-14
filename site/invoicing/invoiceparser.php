@@ -24,7 +24,7 @@
 			$formatter['tbody'] = formatInvoiceTabJSON($invdat->tabvals, $invdat->tabsumpax, $invdat->tabsumam);
 			$savetodb = 0;
 		}
-		else 
+		else
 		if($_POST['command'] == 'new'){
 			$invdat = getJSONobj("template.json");
 			$name = $_POST['name'];
@@ -75,10 +75,10 @@
 		}
 		$reqidjvar = "\"".implode("\",\"",$requestid)."\"";
 		$invtab = "<table id='invtab'>".$thead.$formatter['tbody']."</table>";
-		
+
 		$invtab .= "<div class='w3-center w3-small w3-row' style='font-weight:bold' id='inv-aminword'>".$formatter['inword']."</div>";
 	}
-	else 
+	else
 		exit;
 
 function getTableHeadings($thArray){
@@ -109,7 +109,7 @@ function formatInvoiceTabDB(&$requestid, $dr, $ctype){
 	$invsumpax = 0;
 	$f = new NumberFormatter("en_UK", NumberFormatter::SPELLOUT);
 	$outputtab['tbody']  = "";
-	
+
 	for($i=0;$i<count($dr);$i++){
 		$requestid[$i]=  $dr[$i]['id'];
 		$dir = ($dr[$i]['arrival_departure']==0)?'Arr':'Dep';
@@ -119,14 +119,14 @@ function formatInvoiceTabDB(&$requestid, $dr, $ctype){
 						<td>".$dr[$i]['flight_no']."</td>
 						<td>".$dr[$i]['name']."</td>
 						<td>".$dr[$i]['no_of_passengers']."</td>";
-		if($ctype == 2)				
+		if($ctype == 2)
 			$outputtab['tbody'] .="<td>".$dr[$i]['amount']/$dr[$i]['no_of_passengers']."</td>
 												<td>".$dr[$i]['amount']."</td>
 					   </tr>";
-		if($ctype == 3)				
+		if($ctype == 3)
 			$outputtab['tbody'] .="<td>".$dr[$i]['amount']."</td>
 												<td>".$dr[$i]['card_no']."</td>
-					   </tr>";					   
+					   </tr>";
 		$invsum += $dr[$i]['amount'];
 		$invsumpax += $dr[$i]['no_of_passengers'];
 	}
@@ -143,7 +143,7 @@ function formatInvoiceTabDB(&$requestid, $dr, $ctype){
 <input type="hidden" id="inv-cname" value="<?php echo $name;?>">
 <page size="A4">
 <div class="w3-container w3-margin w3-small" style="font-family:'Times New Roman', Times, serif;">
-<div class="w3-row w3-center w3-large" id="printdiv"><a href="javascript:void(0)" class="nodec" onclick="publishInvoice('<?php echo $savetodb;?>')">&#128438;</a></div>
+<div class="w3-row w3-center w3-large" id="printdiv"><a href="javascript:void(0)" class="nodec" onclick="publishInvoice('<?php echo $savetodb;?>')">Print & Save</a></div>
 	<div class="w3-margin">
 		<div class="w3-row" style="font-weight: bold;">
 			<div class="w3-col" style="width:80px">Invoice Date:</div>
@@ -177,7 +177,7 @@ function formatInvoiceTabDB(&$requestid, $dr, $ctype){
 <div class="w3-container w3-margin w3-small" style="font-family:'Times New Roman', Times, serif;">
 	<div class="w3-margin">
 		<!-- INVOICE FOOTER-->
-		<div class="w3-row w3-light-gray" style="margin-top:10px" contenteditable="true" id='inv-footer'><?php echo $var_footr;?></div>	
+		<div class="w3-row w3-light-gray" style="margin-top:10px" contenteditable="true" id='inv-footer'><?php echo $var_footr;?></div>
 		<!-- INVOICE FOOTER-->
 	</div>
 </div>
@@ -196,7 +196,7 @@ table#invtab,tr,td,th{
  }
 @media print {
     body {
-		margin-top: 0px; margin-bottom: 50mm; 
+		margin-top: 0px; margin-bottom: 50mm;
 		margin-left: 0mm; margin-right: 0mm;
 		}
 	#printdiv {
@@ -211,7 +211,7 @@ table#invtab,tr,td,th{
 	var reqidjvar = [<?php echo $reqidjvar;?>];
 	var iam = 'external';
 </script>
-<script src="<?php echo JSDIR;?>/crudinvoice.js?version=1.4"></script>
+<script src="<?php echo JSDIR;?>/crudinvoice.js?version=1.6"></script>
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>

@@ -1,8 +1,7 @@
 <?php
-if(count(get_included_files()) ==1) 
+if(count(get_included_files()) ==1)
 	include("index.php");
 function formatInvoiceTab($dr, $ctype){
-	$outputtab  = "<table class='w3-table-all' id='records'>";
 	if($ctype == -1){
 		$uninsum = array(); // uninvoiced summary
 		for($i=0;$i<count($dr);$i++){
@@ -25,71 +24,64 @@ function formatInvoiceTab($dr, $ctype){
 				}
 			}
 		}
-		$corptab = "<div style='max-height:80vh;overflow:auto' class='w3-half'>\n";
-		$banktab = "<div style='max-height:80vh;overflow:auto' class='w3-half'>\n";
+		$corptab = "";
+		$banktab = "";
 		foreach($uninsum as $uninmon=>$data){
-			$datehead = date("F, Y",strtotime($uninmon));
+			$datehead = date("M, Y",strtotime($uninmon));
 			$fromd = $uninmon."-01";
 			$tod = date("Y-m-t",strtotime($uninmon));
 			if(isset($uninsum[$uninmon]['corp'])){
+				$corptab .= "<div class=\"w3-white w3-card-4 w3-round\" style=\"overflow:hidden;margin-bottom:8px\">";
+				$corptab .= "<div class=\"w3-row w3-center w3-tiny w3-light-blue	\">
+					Uninvoiced <strong>CORPORATES</strong> for the month of <strong>$datehead</strong></div>";
+
 				$corptab  .= "
-							<table class='w3-table-all w3-tiny'>";
+							<table class='w3-tiny w3-center' width='100%' style='border-collapse:collapse'>";
 				$corptab  .= "
-							  <tr class='w3-light-blue'>
-								<td colspan=3 class='w3-center'>
-									Uninvoiced <strong>CORPORATES</strong> for the month of <strong>$datehead</strong>
-								</td>
-							  </tr>";
-				$corptab  .= "
-							  <tr>
-								<th>Corporate Name</th>
-								<th>Number of records</th>
+							  <tr class='w3-light-gray'>
+								<th>Corporate</th>
+								<th>Records</th>
 								<th>Action</th>
 							  </tr>";
 				$corpdata = $uninsum[$uninmon]['corp'];
 				foreach($corpdata as $corpname=>$values){
 					$corptab  .= "
-							  <tr>
+							  <tr style='border-bottom:1px solid rgba(0,0,0,0.2)'>
 								<td>$corpname</td>
 								<td>".$values['count']."</td>
-								<td><a href='javascript:void(0)' onclick=\"genInvoice(2, '$corpname', '$fromd', '$tod')\">Generate Invoice</a></td>
+								<td><a href='javascript:void(0)' class='nodec' onclick=\"genInvoice(2, '$corpname', '$fromd', '$tod')\">Generate Invoice</a></td>
 							  </tr>";
 				}
-				$corptab .="
-							</table>";
+				$corptab .="</table>";
+				$corptab .="</div>";
 			}
 			if(isset($uninsum[$uninmon]['bank'])){
+				$banktab .= "<div class=\"w3-white w3-card-4 w3-round\" style=\"overflow:hidden;margin-bottom:8px\">";
+				$banktab .= "<div class=\"w3-row w3-center w3-tiny w3-teal	\">
+					Uninvoiced <strong>BANKS</strong> for the month of <strong>$datehead</strong></div>";
 				$banktab  .= "
-							<table class='w3-table-all w3-tiny'>";
+							<table class='w3-tiny w3-center' width='100%' style='border-collapse:collapse'>";
 				$banktab  .= "
-							  <tr class='w3-light-green'>
-								<td colspan=3 class='w3-center'>
-									Uninvoiced <strong>BANKS</strong> for the month of <strong>$datehead</strong>
-								</td>
-							  </tr>";
-				$banktab  .= "
-							  <tr>
-								<th>Bank Code</th>
-								<th>Number of records</th>
+							  <tr class='w3-light-gray'>
+								<th>Code</th>
+								<th>Records</th>
 								<th>Action</th>
 							  </tr>";
 				$bankdata = $uninsum[$uninmon]['bank'];
 				foreach($bankdata as $bankcode=>$values){
 					$banktab  .= "
-							  <tr>
+							  <tr style='border-bottom:1px solid rgba(0,0,0,0.2)'>
 								<td>$bankcode</td>
 								<td>".$values['count']."</td>
-								<td><a href='javascript:void(0)' onclick=\"genInvoice(3, '$bankcode', '$fromd', '$tod')\">Generate Invoice</a></td>
+								<td><a href='javascript:void(0)' class='nodec' onclick=\"genInvoice(3, '$bankcode', '$fromd', '$tod')\">Generate Invoice</a></td>
 							  </tr>";
 				}
 				$banktab .="</table>";
-			}			
+				$banktab .="</div>";
+			}
 		}
-		$corptab .="
-					</div>";
-		$banktab .="
-					</div>";
-		$outputtab = $corptab.$banktab;
+		$outputtab['corptab'] = $corptab;
+		$outputtab['banktab'] = $banktab;
 		return $outputtab;
 	}
 }

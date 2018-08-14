@@ -64,86 +64,45 @@
 	<div class="w3-gray w3-row" style="min-height:100vh">
 	<!-- Top Menu Starts-->
 	<?php
-		$pagetitle = "Invoice and Payment Management";
-		include(TEMPLATEDIR."/topmenu.php");
+	$menuitems[0]['classes']  = 'w3-center w3-small darkmenu';
+	$menuitems[0]['include']  = TEMPLATEDIR."/queryPaidInvoice.php";
+	$menuitems[0]['details']  = "<a href='javascript:void(0)' onclick=\"showQuerySelector('down')\" class='nodec'>Query Paid Invoice</a>";
+
+	$menuitems[1]['classes']  = 'w3-center w3-small darkermenu';
+	$menuitems[1]['include']  = TEMPLATEDIR."/partialInvoiceForm.php";
+	$menuitems[1]['details']  = "<a href='javascript:void(0)' onclick=\"showReportSelector('down')\" class='nodec'>Partial Invoice</a>";
+	$pagetitle = "Invoice and Payment Management";
+
+	$menuitems[2]['classes']  = 'w3-center w3-small darkestmenu';
+	$menuitems[2]['details']  = "<a href='javascript:void(0)' onclick=\"showArrearSummary('down')\" class='nodec'>Arrear Summary</a>";
+	$pagetitle = "Invoice and Payment Management";
+
+	include(TEMPLATEDIR."/topmenu.php");
+	//include(TEMPLATEDIR."/partialInvoiceForm.php");
 	?>
 	<!-- Top Menu Ends-->
-		<!--###########################DIV FOR MAIN PRESENTER TABLES###########################-->
-		<div id="invrecords" style="overflow:hidden;top:20px;position:relative;z-index:1" class=" w3-row">
-			<div class='w3-row-padding w3-twothird'>
-				<?php echo $invtab;?>
+	<!--########################### DIV FOR MAIN PRESENTER TABLES STARTS ###########################-->
+		<div id="invrecords" style="overflow:hidden;top:8px;position:relative;z-index:1" class=" w3-row">
+			<div class='w3-row-padding w3-third'>
+				<?php echo $invtab['corptab'];?>
 			</div>
-			<div class="w3-third" id='invoicePanel'>
+			<div class='w3-row-padding w3-third'>
+				<?php echo $invtab['banktab'];?>
+			</div>
+			<div class='w3-third w3-row-padding' id='invoicePanel'>
 				<?php include("invoicePAIDarchive.php")?>
-				<div class="w3-card w3-margin-right w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $paidInvTab;?></div>
+				<div class="w3-card w3-margin-bottom" style="max-height:40vh;overflow:auto" id="paidInvoiceDiv"><?php echo $paidInvTab;?></div>
 				<?php include("invoiceUPAIDarchive.php")?>
-				<div class="w3-card w3-margin-right w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $upCorpTab;?></div>
-				<div class="w3-card w3-margin-right w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $upBankTab;?></div>
+				<div class="w3-card w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $upCorpTab;?></div>
+				<div class="w3-card w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $upBankTab;?></div>
 			</div>
 		</div>
-		<!--###########################DIV FOR MAIN PRESENTER TABLES###########################-->
-
-		<div class="w3-card-4 w3-display-container report-selector" id="reportform">
-			  <!-- Invoice Form Starts-->
-			  <form method="POST" action="" autocomplete="off">
-				<table style="width:100%;height:100%;" class="w3-display-top-middle w3-tiny">
-					<tr><th style="text-align:right;width:40%">From:</th>
-						<td>
-							<input type="date" name="startdate" class="w3-input" id="startdate" required value="<?php echo $startdate;?>">
-						</td>
-					</tr>
-					<tr><th style="text-align:right">To:</th>
-						<td>
-							<input type="date" name="enddate" class="w3-input" id="enddate" required value="<?php echo $enddate;?>">
-						</td>
-					</tr>
-					<tr><th style="text-align:right">Select Type:</th>
-						<td>
-						<select class="w3-select" id="client_type" name="client_type" onchange="invCondition()">
-							<option value='0' selected disabled>All</option>
-							<option value='2'>Due</option>
-							<option value='3'>Card</option>
-						</select>
-						</td>
-					</tr>
-					<tr class="spel" id="spel-2" style="display:none">
-						<th style="text-align:right">Corporate Name:</th>
-						<td>
-							<input type="text" class="w3-input els autocomplete" name="corp_id" id="el-2" placeholder="Corporate Name" required disabled size=12>
-						</td>
-					</tr>
-					<tr class="spel" id="spel-3" style="display:none">
-						<th style="text-align:right">Bank Name:</th>
-						<td>
-							<input type="text" class="w3-input els autocomplete" name="bank_id" id="el-3" placeholder="Bank Name" required disabled size=12>
-						</td>
-					</tr>
-					<tr><th style="text-align:right">Record Type:</th>
-						<td>
-						<select class="w3-select" id="record_type" name="record_type">
-							<option value='all'>All</option>
-							<option value='invoiced'>Invoiced</option>
-							<option value='uninvoiced'>Uninvoiced</option>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 style="text-align:center">
-							<input type="button" value="SHOW" class="w3-bar w3-button w3-light-blue" onclick="processInvoice()">
-						</td>
-					</tr>
-				</table>
-			  </form>
-			  <div class="w3-display-bottom-middle w3-center"><button class="report-selector-toggle" id="selectorshow" value="down" onclick="showReportSelector()">&#8744;</button></div>
-			  <!-- Invoice Form Ends-->
-		</div>
-		<!-- Top Menu Ends-->
-
-	</div>
+	<!--########################### DIV FOR MAIN PRESENTER TABLES ENDS ###########################-->
+</div>
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/invoice.js?version=1.0.2"></script>
+<script src="<?php echo JSDIR;?>/invoice.js?version=1.1.0"></script>
 <script>
 		var jscorporates = [<?php echo $corpjvar;?>];
 		var jsbanks = [<?php echo $bankjvar;?>];

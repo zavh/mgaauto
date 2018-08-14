@@ -1,6 +1,7 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT']."/mga/config/serverconfig.php");
 require_once(TEMPLATEDIR."/header.php");
+require_once(UTILSDIR."/commons.php");
 
 //print_r($_POST);
 $obj = json_decode($_POST["invdat"], false);
@@ -41,7 +42,10 @@ if($_POST['invsav']){
 	for($i=0;$i<count($obj->requestids);$i++){
 		$reqObj->updateRecord('invoice', $lid, 'id', $obj->requestids[$i]);
 	}
+	monthUpdated($con, $obj->invfromd, '1');
 }
+//Rasing flag for month updateRecord
+
 //open or create the file
 $handle = fopen(INVOICESTORE."/".$filename,'w+');
 
@@ -50,6 +54,12 @@ fwrite($handle,$formattedData);
 
 //close the file
 fclose($handle);
-
+?>
+Invoice has been saved as JSON.
+<script>
+window.opener.location.reload(false);
+window.close();
+</script>
+<?php
 require_once(TEMPLATEDIR."/footer.php");
 ?>
