@@ -98,7 +98,6 @@ if($command == 'paydateupdate'){
 	$arrearArr = $md->getArrearArr();
 	monthArrearUpdate($con, $md->md['month'], $arrearArr);
 	updateConsucutiveMonths($con, $md);
-	//echo "<pre>";print_r($md);echo "</pre>";
 }
 if($command == 'reset'){
 	print_r($_POST);
@@ -138,8 +137,12 @@ if($command == 'reset'){
 	$arrearArr = $md->getArrearArr();
 	monthArrearUpdate($con, $md->md['month'], $arrearArr);
 	updateConsucutiveMonths($con, $md);
-	//echo "<pre>";print_r($md);echo "</pre>";
+	echo "<script>
+	window.opener.location.reload(false);
+	window.close();
+	</script>";
 }
 require_once(TEMPLATEDIR."/footer.php");
-header ('Location:'.$_SERVER['HTTP_REFERER']);
+if($command != 'reset')
+	header ('Location:'.$_SERVER['HTTP_REFERER']);
 ?>
