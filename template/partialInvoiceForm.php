@@ -23,21 +23,21 @@ if(count(get_included_files()) ==1) {
         <td>
         <select class="w3-select" id="client_type" name="client_type" onchange="invCondition()">
           <option value='0' selected disabled>All</option>
-          <option value='2'>Due</option>
-          <option value='3'>Card</option>
+          <option value='2'>Card</option>
+					<option value='3'>Due</option>
         </select>
         </td>
       </tr>
-      <tr class="spel" id="spel-2" style="display:none">
+      <tr class="spel" id="spel-3" style="display:none">
         <th style="text-align:right">Corporate Name:</th>
         <td>
-          <input type="text" class="w3-input els autocomplete" name="corp_id" id="el-2" placeholder="Corporate Name" required disabled size=12>
+          <input type="text" class="w3-input els autocomplete" name="corp_id" id="el-3" placeholder="Corporate Name" required disabled size=12>
         </td>
       </tr>
-      <tr class="spel" id="spel-3" style="display:none">
+      <tr class="spel" id="spel-2" style="display:none">
         <th style="text-align:right">Bank Name:</th>
         <td>
-          <input type="text" class="w3-input els autocomplete" name="bank_id" id="el-3" placeholder="Bank Name" required disabled size=12>
+          <input type="text" class="w3-input els autocomplete" name="bank_id" id="el-2" placeholder="Bank Name" required disabled size=12>
         </td>
       </tr>
       <tr>

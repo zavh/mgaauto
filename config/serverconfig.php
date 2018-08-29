@@ -14,4 +14,6 @@ define("LETTERHEADHEAD","100px");
 define("INVOICEREF", "# Bill/ MGA/");
 define("INVOICESTORE", MAINPATH."/site/invoicing/invoices");
 define("PERFORMANCEREPORTDIR", MAINPATH."/site/performance/reports");
+define("EMPTYMONTHTEMPLATE", TEMPLATEDIR."/monthreport-template.json");
+define("IMAGEFOLDER",MAINHOST."/images");
 ?>

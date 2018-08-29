@@ -3,6 +3,7 @@
 	include(TEMPLATEDIR."/header.php");
 	include(TEMPLATEDIR."/mainmenu.php");
 	include(UTILSDIR."/autocompletedata.php");
+	include(UTILSDIR."/commons.php");
 
 	$td = date("Y-m-d");
 	$startdate = date("Y-m-01");
@@ -68,13 +69,12 @@
 	$menuitems[0]['include']  = TEMPLATEDIR."/queryPaidInvoice.php";
 	$menuitems[0]['details']  = "<a href='javascript:void(0)' onclick=\"showQuerySelector('down')\" class='nodec'>Query Paid Invoice</a>";
 
-	$menuitems[1]['classes']  = 'w3-center w3-small darkermenu';
+	$menuitems[1]['classes']  = 'w3-center w3-small darkestmenu';
 	$menuitems[1]['include']  = TEMPLATEDIR."/partialInvoiceForm.php";
 	$menuitems[1]['details']  = "<a href='javascript:void(0)' onclick=\"showReportSelector('down')\" class='nodec'>Partial Invoice</a>";
-	$pagetitle = "Invoice and Payment Management";
 
-	$menuitems[2]['classes']  = 'w3-center w3-small darkestmenu';
-	$menuitems[2]['details']  = "<a href='javascript:void(0)' onclick=\"showArrearSummary('down')\" class='nodec'>Arrear Summary</a>";
+//	$menuitems[2]['classes']  = 'w3-center w3-small darkestmenu';
+//	$menuitems[2]['details']  = "<a href='javascript:void(0)' onclick=\"showArrearSummary('down')\" class='nodec'>Arrear Summary</a>";
 	$pagetitle = "Invoice and Payment Management";
 
 	include(TEMPLATEDIR."/topmenu.php");
@@ -83,18 +83,34 @@
 	<!-- Top Menu Ends-->
 	<!--########################### DIV FOR MAIN PRESENTER TABLES STARTS ###########################-->
 		<div id="invrecords" style="overflow:hidden;top:8px;position:relative;z-index:1" class=" w3-row">
-			<div class='w3-row-padding w3-third'>
+			<div class='w3-row-padding w3-quarter'>
 				<?php echo $invtab['corptab'];?>
-			</div>
-			<div class='w3-row-padding w3-third'>
 				<?php echo $invtab['banktab'];?>
 			</div>
-			<div class='w3-third w3-row-padding' id='invoicePanel'>
-				<?php include("invoicePAIDarchive.php")?>
-				<div class="w3-card w3-margin-bottom" style="max-height:40vh;overflow:auto" id="paidInvoiceDiv"><?php echo $paidInvTab;?></div>
+			<div class='w3-half w3-row-padding' id='invoicePanel'>
 				<?php include("invoiceUPAIDarchive.php")?>
-				<div class="w3-card w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $upCorpTab;?></div>
-				<div class="w3-card w3-margin-bottom" style="max-height:40vh;overflow:auto"><?php echo $upBankTab;?></div>
+				<!-- Unpaid Corporate Invoice table-->
+				<div class="w3-card w3-margin-bottom" style="max-height:50vh;overflow:auto">
+					<div class='w3-white w3-round' style='overflow:hidden'>
+						<div class="w3-light-blue w3-tiny w3-center">Unpaid Corporate Invoices</div>
+						<?php echo $upCorpTab;?>
+					</div>
+				</div>
+				<!-- Unpaid Bank Invoice table-->
+				<div class="w3-card w3-margin-bottom" style="max-height:50vh;overflow:auto">
+					<div class='w3-white w3-round' style='overflow:hidden'>
+						<div class="w3-lime w3-tiny w3-center">Unpaid Bank Invoices</div>
+					<?php echo $upBankTab;?>
+				</div>
+				</div>
+			</div>
+			<div class='w3-row-padding w3-quarter'>
+				<div class='w3-black w3-round-large w3-card-4' style='overflow:hidden'>
+					<div class="w3-blue-gray w3-tiny w3-center">Paid Invoices</div>
+					<div style="max-height:90vh;overflow:auto" id="paidInvoiceDiv">
+						<?php include("invoicePAIDarchive.php")?>
+					</div>
+			</div>
 			</div>
 		</div>
 	<!--########################### DIV FOR MAIN PRESENTER TABLES ENDS ###########################-->
@@ -102,11 +118,11 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/invoice.js?version=1.1.0"></script>
+<script src="<?php echo JSDIR;?>/invoice.js?version=0.3"></script>
 <script>
 		var jscorporates = [<?php echo $corpjvar;?>];
 		var jsbanks = [<?php echo $bankjvar;?>];
 
-		autocomplete(document.getElementById("el-2"), jscorporates);
-		autocomplete(document.getElementById("el-3"), jsbanks);
+		autocomplete(document.getElementById("el-3"), jscorporates);
+		autocomplete(document.getElementById("el-2"), jsbanks);
 </script>

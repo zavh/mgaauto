@@ -5,7 +5,7 @@ class DbTables{
 
 	function __construct($con, $table) {
         $this->con = $con;
-		$this->table = $table;
+				$this->table = $table;
     }
 
 	public function idToField($id, $field){

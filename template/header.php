@@ -23,7 +23,7 @@ else exit;
 	<head>
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/w3s.css">
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/autocomplete.css">
-		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.1">
+		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.0.1">
 		<script src="<?php echo JSDIR;?>/autocomplete.js"></script>
 		<title> MGA Voucher Application</title>
 		<script src="<?php echo JSDIR;?>/site.js"></script>

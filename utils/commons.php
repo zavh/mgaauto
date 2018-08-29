@@ -20,7 +20,56 @@ function randPassGen(){
 
 function monthUpdated($con, $tdReadable, $status){
 	$mrObj = new DbTables($con, "monthreport");
-	$idvalue = "'".date("Y-m-01",strtotime($tdReadable))."'";
+	$idvalue = "'".getMonth($tdReadable)."-01'";
 	$mrObj->updateRecord('update_status', $status, 'report_month', $idvalue);
+}
+
+function monthArrearUpdate($con, $tdReadable, $arrearArr){
+	echo "Accessed for $tdReadable<br>";
+	$mrObj = new DbTables($con, "monthreport");
+	$idvalue = "'".getMonth($tdReadable)."-01'";
+	$arrearSTMT = json_encode($arrearArr);
+	$mrObj->updateRecord('arrear', $arrearSTMT, 'report_month', $idvalue);
+}
+
+function getMonth($dateString){
+	return date("Y-m",strtotime($dateString));
+}
+
+function getJSONobj($jsonfile){
+	$str = file_get_contents($jsonfile);
+	$json = json_decode($str, true);
+	return $json;
+}
+function getLastMonthArrear($con, $targetMonth){
+	$mrDbObj = new DbTables($con, "monthreport");
+	$sql = "SELECT `repository_name`,`arrear` from `monthreport` WHERE `report_month`<'$targetMonth' ORDER BY `report_month` DESC LIMIT 1";
+	$pf = $mrDbObj->getSqlResult($sql);
+	return $pf;
+}
+function getConsecutiveMonths($con, $month){
+	$mrDbObj = new DbTables($con, "monthreport");
+	$sql = "SELECT * FROM `monthreport` WHERE `report_month`>'$month' ORDER BY `report_month` ASC";
+	$cm = $mrDbObj->getSqlResult($sql); //consecutive months
+	return $cm;
+}
+function updateConsucutiveMonths($con, $mdObj){
+	$nmArr = getConsecutiveMonths($con, $mdObj->md['month']); //Next Months Array
+	if(count($nmArr)>0){
+		$tmpArrear = $mdObj->getArrearArr();
+		for($i=0;$i<count($nmArr);$i++){
+			$tmpFName = PERFORMANCEREPORTDIR."/".$nmArr[$i]['repository_name'];
+			$tempMrData = getJSONobj($tmpFName);
+			$tempMdObj = new month_data($tempMrData); //Object instantiated
+			$tempMdObj->setRepository($tmpFName); //Setting up filename where data is saved at the end of execution.
+
+			$tempArrearArr = json_decode($nmArr[$i]['arrear'],true);
+			$tempMdObj->setPrevArrear($tmpArrear);
+			$tempMdObj->setArrear();
+			$tempMdObj->writeMonthlyData($tempMdObj->md);
+			$tmpArrear = $tempMdObj->getArrearArr();
+			monthArrearUpdate($con, $nmArr[$i]['report_month'], $tmpArrear);
+		}
+	}
 }
 ?>

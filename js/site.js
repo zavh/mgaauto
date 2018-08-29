@@ -22,12 +22,12 @@ function addInfo(ctype, div, fields)
     if(ctype==2){
         document.getElementsByName('payment')[0].value = 3;
         document.getElementById('payment').selectedIndex = 3;
-    }    
+    }
     if(ctype==3){
         document.getElementsByName('payment')[0].value = 2;
         document.getElementById('payment').selectedIndex = 2;
-    }        
-    
+    }
+
 	var i = 0;
 	var divs = document.getElementsByClassName("spdiv");
 	var els  = document.getElementsByClassName("spel");
@@ -77,7 +77,7 @@ function showViewMode(evt, mode){
 	var i;
 	var panelleft = document.getElementById("report");
 	var panelright = document.getElementById("record");
-	
+
 	var reportcontainer = document.getElementById("reportcontainer");
 	var spot = document.getElementById('spot');
 	var card = document.getElementById('card');
@@ -87,7 +87,7 @@ function showViewMode(evt, mode){
 		x[i].className = x[i].className.replace(" active", "");
 	}
 	evt.currentTarget.className += " active";
-	
+
 	if(mode == 1){
 		panelleft.style.display = "block";
 		panelleft.className = panelleft.className.replace(" w3-rest ");
@@ -95,7 +95,7 @@ function showViewMode(evt, mode){
 		panelright.style.display = "block";
 		panelright.className = panelright.className.replace(" w3-rest ");
 		panelright.className += " w3-twothird ";
-		
+
 		reportcontainer.className = reportcontainer.className.replace(" w3-row ");
 		spot.className = spot.className.replace(" w3-third drfullheight ");
 		card.className = card.className.replace(" w3-third drfullheight ");
@@ -108,28 +108,28 @@ function showViewMode(evt, mode){
 		panelleft.className = panelleft.className.replace(" w3-third ");
 		panelleft.className += " w3-rest ";
 		panelleft.style.display = "block";
-		
+
 		reportcontainer.className += " w3-row ";
 		spot.className += " w3-third drfullheight ";
 		card.className += " w3-third drfullheight ";
 		due.className += " w3-third drfullheight ";
 		summarycontainer.className += " w3-row ";
-	}	
+	}
 	if(mode == 3){
 		panelleft.style.display = "none";
 		panelleft.className = panelleft.className.replace(" w3-third ");
 		panelright.style.display = "block";
 		panelright.className = panelright.className.replace(" w3-twothird ");
 		panelright.className += " w3-rest ";
-		
+
 		reportcontainer.className = reportcontainer.className.replace(" w3-row ");
 		spot.className = spot.className.replace(" w3-third drfullheight ");
 		card.className = card.className.replace(" w3-third drfullheight ");
 		due.className = due.className.replace(" w3-third drfullheight ");
-		summarycontainer.className = summarycontainer.className.replace(" w3-row ");		
+		summarycontainer.className = summarycontainer.className.replace(" w3-row ");
 	}
 }
-//Main Ajax function			
+//Main Ajax function
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -158,7 +158,7 @@ function ajaxFunction(instruction, execute_id, divid){
 				    var ajaxDisplay = document.getElementById(divid);
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
-	   } 
+	   }
 //Changing the assigned service provider
 		if(instruction == "changeassigned"){
 			var id = divid.split("-").pop();

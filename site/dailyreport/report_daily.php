@@ -310,7 +310,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 		if($entry['invoice']==0){
 			$actionLink  = "<a class='w3-pale-green nodec dot' href='javascript:void(0)' onclick='loadDoc(".json_encode($entry).")' title='Edit'>E</a>";
 			$actionLink .= "&nbsp;";
-			$actionLink .= "<a class='w3-pale-red nodec dot' href='javascript:void(0)' onclick='deleteEntry(".$entry['id'].")' title='Delete'>D</a>";
+			$actionLink .= "<a class='w3-pale-red nodec dot' href='javascript:void(0)' onclick='deleteEntry(".json_encode($entry).")' title='Delete'>D</a>";
 		}
 		else {
 			$actionLink = "<a class='w3-black dot nodec'

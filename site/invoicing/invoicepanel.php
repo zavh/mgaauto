@@ -33,7 +33,7 @@ function formatInvoiceTab($dr, $ctype){
 			if(isset($uninsum[$uninmon]['corp'])){
 				$corptab .= "<div class=\"w3-white w3-card-4 w3-round\" style=\"overflow:hidden;margin-bottom:8px\">";
 				$corptab .= "<div class=\"w3-row w3-center w3-tiny w3-light-blue	\">
-					Uninvoiced <strong>CORPORATES</strong> for the month of <strong>$datehead</strong></div>";
+					Uninvoiced <strong>CORPORATES</strong> : <strong>$datehead</strong></div>";
 
 				$corptab  .= "
 							<table class='w3-tiny w3-center' width='100%' style='border-collapse:collapse'>";
@@ -49,7 +49,12 @@ function formatInvoiceTab($dr, $ctype){
 							  <tr style='border-bottom:1px solid rgba(0,0,0,0.2)'>
 								<td>$corpname</td>
 								<td>".$values['count']."</td>
-								<td><a href='javascript:void(0)' class='nodec' onclick=\"genInvoice(2, '$corpname', '$fromd', '$tod')\">Generate Invoice</a></td>
+								<td><a
+											href='javascript:void(0)'
+											class='nodec w3-light-blue dot'
+											onclick=\"genInvoice(3, '$corpname', '$fromd', '$tod')\"
+											title=\"Generate Invoice\"
+											style=\"font-size:8px;\">&#x279C;</a></td>
 							  </tr>";
 				}
 				$corptab .="</table>";
@@ -57,8 +62,8 @@ function formatInvoiceTab($dr, $ctype){
 			}
 			if(isset($uninsum[$uninmon]['bank'])){
 				$banktab .= "<div class=\"w3-white w3-card-4 w3-round\" style=\"overflow:hidden;margin-bottom:8px\">";
-				$banktab .= "<div class=\"w3-row w3-center w3-tiny w3-teal	\">
-					Uninvoiced <strong>BANKS</strong> for the month of <strong>$datehead</strong></div>";
+				$banktab .= "<div class=\"w3-row w3-center w3-tiny w3-lime	\">
+					Uninvoiced <strong>BANKS</strong> : <strong>$datehead</strong></div>";
 				$banktab  .= "
 							<table class='w3-tiny w3-center' width='100%' style='border-collapse:collapse'>";
 				$banktab  .= "
@@ -73,7 +78,12 @@ function formatInvoiceTab($dr, $ctype){
 							  <tr style='border-bottom:1px solid rgba(0,0,0,0.2)'>
 								<td>$bankcode</td>
 								<td>".$values['count']."</td>
-								<td><a href='javascript:void(0)' class='nodec' onclick=\"genInvoice(3, '$bankcode', '$fromd', '$tod')\">Generate Invoice</a></td>
+								<td><a
+											href='javascript:void(0)'
+											class='nodec w3-lime dot'
+											onclick=\"genInvoice(2, '$bankcode', '$fromd', '$tod')\"
+											title=\"Generate Invoice\"
+											style=\"font-size:8px;\">&#x279C;</a></td>
 							  </tr>";
 				}
 				$banktab .="</table>";

@@ -4,8 +4,16 @@
 
 	$sql = "";
 	$savetodb = 1;
+	$mode = 0;
+	$editmode = "contenteditable=\"true\"";
+	$stylemode = "background:#eee";
+	$classmode = "w3-light-gray";
+	$pmntpanel = '';
 	if(isset($_POST['command'])){
 		if($_POST['command'] == 'archive'){
+			$inv_id = $_POST['invid'];
+			$mode = $_POST['mode'];
+			$pmntpanel = getPayments($inv_id, $con, $mode);
 			$invdat = getJSONobj(INVOICESTORE."/".$_POST['archive']);
 			$var_addrs = $invdat->invaddr;
 			$var_invdt = $invdat->invdate;
@@ -21,8 +29,13 @@
 			$thead = getTableHeadings($invdat->tabheads);
 			$requestid = $invdat->requestids;
 			$formatter['inword'] = $invdat->tabsumword;
-			$formatter['tbody'] = formatInvoiceTabJSON($invdat->tabvals, $invdat->tabsumpax, $invdat->tabsumam);
+			$formatter['tbody'] = formatInvoiceTabJSON($invdat->tabvals, $invdat->tabsumpax, $invdat->tabsumam, $invdat->invctype);
 			$savetodb = 0;
+			if($mode == 2){
+				$editmode = '';
+				$classmode = '';
+				$stylemode = '';
+			}
 		}
 		else
 		if($_POST['command'] == 'new'){
@@ -43,24 +56,24 @@
 			$invoicename = "from-$startdate-to-$enddate-";
 			$tables = "`requests`";
 			$var_refno = INVOICEREF.date("m/F/Y/",strtotime($_POST['tod']));
-			if($_POST['ctype'] == '2'){
+			if($_POST['ctype'] == '3'){
 				$thead = getTableHeadings($invdat->tabheadsc);
 				$invoicename .= "corp-".$_POST['name'];
 				$var_refno .= $_POST['name'];
 				$tables .= ", `corporate` ";
-				$condition = "AND `client_type` = 2 AND requests.corporate_id=corporate.corporate_id ";
-				$ctype = 2;
+				$condition = "AND `mode_of_payment` = 3 AND requests.corporate_id=corporate.corporate_id ";
+				$ctype = 3;
 				if(isset($_POST['name'])){
 					$condition .= "AND corporate.corporate_name = '".$_POST['name']."' ";
 				}
 			}
-			if($_POST['ctype'] == '3'){
+			if($_POST['ctype'] == '2'){
 				$thead = getTableHeadings($invdat->tabheadsb);
 				$invoicename .= "bank-".$_POST['name'];
 				$var_refno .= $_POST['name'];
 				$tables .= ", `bank`";
-				$condition = "AND `client_type` = 3 AND requests.bank_id = bank.bank_id ";
-				$ctype = 3;
+				$condition = "AND `mode_of_payment` = 2 AND requests.bank_id = bank.bank_id ";
+				$ctype = 2;
 				if(isset($_POST['name'])){
 					$condition .= "AND bank.bank_code = '".$_POST['name']."' ";
 				}
@@ -93,7 +106,7 @@ function getJSONobj($jsonfile){
 	$json = json_decode($str);
 	return $json;
 }
-function formatInvoiceTabJSON($tabdat, $invsumpax, $invsum){
+function formatInvoiceTabJSON($tabdat, $invsumpax, $invsum, $mop){
 	$tbody = "";
 	for($i=0;$i<count($tabdat);$i++){
 		$tbody .= "<tr class='inv-dat'>\n";
@@ -101,7 +114,10 @@ function formatInvoiceTabJSON($tabdat, $invsumpax, $invsum){
 			$tbody .= "<td>".$tabdat[$i]->rowdata[$j]."</td>\n";
 		$tbody .= "</tr>\n";
 	}
-	$tbody .= "<tr style='font-weight:bold'><td></td><td></td><td></td><td>Total</td><td id='inv-sumpax'>$invsumpax</td><td></td><td id='inv-sumam'>$invsum</td></tr>";
+	if($mop == 2)
+		$tbody .= "<tr style='font-weight:bold'><td></td><td></td><td></td><td>Total</td><td id='inv-sumpax'>$invsumpax</td><td id='inv-sumam'>$invsum</td><td></td></tr>";
+	else if ($mop == 3)
+		$tbody .= "<tr style='font-weight:bold'><td></td><td></td><td></td><td>Total</td><td id='inv-sumpax'>$invsumpax</td><td></td><td id='inv-sumam'>$invsum</td></tr>";
 	return $tbody;
 }
 function formatInvoiceTabDB(&$requestid, $dr, $ctype){
@@ -119,22 +135,51 @@ function formatInvoiceTabDB(&$requestid, $dr, $ctype){
 						<td>".$dr[$i]['flight_no']."</td>
 						<td>".$dr[$i]['name']."</td>
 						<td>".$dr[$i]['no_of_passengers']."</td>";
-		if($ctype == 2)
+		if($ctype == 3)
 			$outputtab['tbody'] .="<td>".$dr[$i]['amount']/$dr[$i]['no_of_passengers']."</td>
 												<td>".$dr[$i]['amount']."</td>
 					   </tr>";
-		if($ctype == 3)
+		if($ctype == 2)
 			$outputtab['tbody'] .="<td>".$dr[$i]['amount']."</td>
 												<td>".$dr[$i]['card_no']."</td>
 					   </tr>";
 		$invsum += $dr[$i]['amount'];
 		$invsumpax += $dr[$i]['no_of_passengers'];
 	}
-	$outputtab['tbody'] .= "<tr style='font-weight:bold'><td></td><td></td><td></td><td>Total</td><td id='inv-sumpax'>$invsumpax</td><td></td><td id='inv-sumam'>$invsum</td></tr>";
+	if($ctype == 2)
+		$outputtab['tbody'] .= "<tr style='font-weight:bold'><td></td><td></td><td></td><td>Total</td><td id='inv-sumpax'>$invsumpax</td><td id='inv-sumam'>$invsum</td><td></td></tr>";
+	if($ctype == 3)
+		$outputtab['tbody'] .= "<tr style='font-weight:bold'><td></td><td></td><td></td><td>Total</td><td id='inv-sumpax'>$invsumpax</td><td></td><td id='inv-sumam'>$invsum</td></tr>";
 	$outputtab['inword']= "Taka ".ucwords($f->format($invsum))." Only";
 	return $outputtab;
 }
-//echo $_SERVER['HTTP_REFERER'];
+
+function getPayments($inv_id, $con, $mode){
+	$sql = "SELECT * FROM `payment` WHERE invoice_id=$inv_id";
+	$payObj = new DbTables($con, 'payment');
+	$r = $payObj->getSqlResult($sql);
+	if(count($r)==0) return;
+	$paytabheads = array('payment_date'=>'Payment Date', 'payment_amount'=>'Amount','paid_by'=>'Paid By','payment_comment'=>'Comment','user'=>'Record Inserted by','action'=>'Action');
+	$headvals = "<tr><th>".implode("</th><th>",array_values($paytabheads))."</th></tr>";
+	$columns = array_keys($paytabheads);
+
+	$payTab = "<table style='width:100%' class='w3-table'>".$headvals;
+	for($i=0;$i<count($r);$i++){
+		$payTab .= "<tr>";
+		$r[$i]['action'] =
+			"<a
+				href='javascript:void(0)'
+				onclick='confirmReset(".$r[$i]['payment_id'].",$inv_id,\"".$r[$i]['payment_amount']."\",$mode)'>
+				Delete
+			</a>";
+		for($j=0;$j<count($columns);$j++){
+			$payTab .= "<td>".$r[$i][$columns[$j]]."</td>";
+		}
+		$payTab .= "</tr>";
+	}
+	$payTab .= "</table>";
+	return $payTab;
+}
 ?>
 <input type="hidden" id="inv-name" value="<?php echo $invoicename;?>">
 <input type="hidden" id="inv-fromd" value="<?php echo $startdate;?>">
@@ -142,47 +187,52 @@ function formatInvoiceTabDB(&$requestid, $dr, $ctype){
 <input type="hidden" id="inv-ctype" value="<?php echo $ctype;?>">
 <input type="hidden" id="inv-cname" value="<?php echo $name;?>">
 <page size="A4">
+	<?php echo $pmntpanel;?>
 <div class="w3-container w3-margin w3-small" style="font-family:'Times New Roman', Times, serif;">
-<div class="w3-row w3-center w3-large" id="printdiv"><a href="javascript:void(0)" class="nodec" onclick="publishInvoice('<?php echo $savetodb;?>')">Print & Save</a></div>
+<div class="w3-row w3-center" id="printdiv"><a href="javascript:void(0)" class="nodec" onclick="publishInvoice('<?php echo $savetodb;?>')"> 🖨</a>
+</div>
 	<div class="w3-margin">
 		<div class="w3-row" style="font-weight: bold;">
 			<div class="w3-col" style="width:80px">Invoice Date:</div>
 			<!-- INVOICE DATE-->
-			<div class="w3-rest" contenteditable="true" style="background:#eee" id="inv-date"><?php echo $var_invdt;?></div>
+			<div class="w3-rest" <?php echo $editmode?>  id="inv-date" style="<?php echo $stylemode;?>"><?php echo $var_invdt;?></div>
 			<!-- INVOICE DATE-->
 		</div>
 		<div class="w3-row" style="font-weight:bold;margin-top:10px">
 			<div class="w3-col" style="width:80px">REF:</div>
 			<!-- INVOICE REF-->
-			<div class="w3-rest" contenteditable="true" style="background:#eee" id="inv-ref"><?php echo $var_refno;?></div>
+			<div class="w3-rest" <?php echo $editmode?>  id="inv-ref" style="<?php echo $stylemode;?>"><?php echo $var_refno;?></div>
 			<!-- INVOICE REF-->
 		</div>
 		<!-- INVOICE CUSTOMER ADDRESSING-->
-		<div class="w3-row w3-light-gray" style="margin-top:10px;" contenteditable="true" id='inv-addressing'><?php echo $var_addrs;?></div>
+		<div class="w3-row <?php echo $classmode?>" <?php echo $editmode?> style="margin-top:10px;" id='inv-addressing'><?php echo $var_addrs;?></div>
 		<!-- INVOICE CUSTOMER ADDRESSING-->
 		<div class="w3-row" style="font-weight:bold;margin-top:10px">
 			<div class="w3-col" style="width:80px">Subject:</div>
 			<!-- INVOICE SUBJECT-->
-			<div class="w3-rest" contenteditable="true" style="background:#eee;text-decoration: underline;" id="inv-sub"><?php echo $var_sbjct;?></div>
+			<div class="w3-rest" <?php echo $editmode?> id="inv-sub" style="text-decoration:underline;<?php echo $stylemode;?>"><?php echo $var_sbjct;?></div>
 			<!-- INVOICE SUBJECT-->
 		</div>
 		<!-- INVOICE FORWARDING-->
-		<div class="w3-row w3-light-gray" style="margin-top:10px" contenteditable="true" id="inv-forwarding"><?php echo $var_frwrd;?></div>
+		<div class="w3-row <?php echo $classmode?>" style="margin-top:10px" <?php echo $editmode?> id="inv-forwarding"><?php echo $var_frwrd;?></div>
 		<!-- INVOICE FORWARDING-->
 	</div>
 </div>
-<div class="w3-row w3-tiny w3-margin" style="font-face:Arial Narrow">
+<div class="w3-row w3-tiny w3-margin" style="font-face:Arial">
 <?php echo $invtab; ?>
 </div>
 <div class="w3-container w3-margin w3-small" style="font-family:'Times New Roman', Times, serif;">
 	<div class="w3-margin">
 		<!-- INVOICE FOOTER-->
-		<div class="w3-row w3-light-gray" style="margin-top:10px" contenteditable="true" id='inv-footer'><?php echo $var_footr;?></div>
+		<div class="w3-row <?php echo $classmode?>" style="margin-top:10px" <?php echo $editmode?> id='inv-footer'><?php echo $var_footr;?></div>
 		<!-- INVOICE FOOTER-->
 	</div>
 </div>
 </page>
 <style>
+body {
+    //background: url("<?php echo IMAGEFOLDER;?>/paid-rectangle-stamp-4.png") no-repeat right top;
+}
 table#invtab{
 	width:100%;
 }
@@ -211,7 +261,7 @@ table#invtab,tr,td,th{
 	var reqidjvar = [<?php echo $reqidjvar;?>];
 	var iam = 'external';
 </script>
-<script src="<?php echo JSDIR;?>/crudinvoice.js?version=1.6"></script>
+<script src="<?php echo JSDIR;?>/crudinvoice.js?version=0.1.0"></script>
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>

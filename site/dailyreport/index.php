@@ -2,8 +2,10 @@
 	include($_SERVER['DOCUMENT_ROOT']."/mga/config/serverconfig.php");
 	include(TEMPLATEDIR."/header.php");
 	include(TEMPLATEDIR."/mainmenu.php");
-
 	include(UTILSDIR."/autocompletedata.php");
+	include(UTILSDIR."/commons.php");
+	require_once(CLASSDIR."/class_month_data.php");
+
 	//Setting the default report date
 	if(!isset($_SESSION['dailyreportdate'])){
 		$_SESSION['dailyreportdate'] = date("Y-m-d");
@@ -41,7 +43,10 @@
 	 	$menuitems[1]['details']  = "Viewing Mode:";
 	 	$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-1\" class=\"viewmode active\" onclick=\"showViewMode(event, 1)\">&#x2776; </a>";
 		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-2\" class=\"viewmode\" onclick=\"showViewMode(event, 2)\">&#x2777; </a>";
-		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-3\" class=\"viewmode\" onclick=\"showViewMode(event, 3)\">&#x2778;</a>";
+		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-3\" class=\"viewmode\" onclick=\"showViewMode(event, 3)\">&#x2778; </a>";
+		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-3\" class=\"viewmode\" onclick=\"
+			document.getElementById('servicereport').style.display='block'\">
+			&#x2779; </a>";
 
 		$menuitems[2]['classes']  = "darkestmenu";
 	 	$menuitems[2]['details']  = "<form method=\"POST\" action=\"\" class=\"w3-center\">";
@@ -92,6 +97,16 @@
 			</div>
 		</div>
 		<!-- New Bill/Request part ends-->
+		<div id="servicereport" class="w3-modal">
+			<div class="w3-modal-content"  style="width:98vw;">
+				<div class="w3-container">
+					<span onclick="document.getElementById('servicereport').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+					<div id='requestcontainer'>
+						<?php include(TEMPLATEDIR."/servicereport.php")?>
+					</div>
+				</div>
+			</div>
+		</div>
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
@@ -147,7 +162,7 @@
 			}
 		}
 	}
-	function deleteEntry(reqid){
+	function deleteEntry(json){
 		var x = confirm("This will Delete the entry permanently. Confirm to proceed.");
 		if(x == true){
 			var deleteForm = document.createElement("form");
@@ -157,7 +172,7 @@
 			var idInput = document.createElement("input");
 		    idInput.type = "hidden";
 		    idInput.name = "reqid";
-		    idInput.value = reqid;
+		    idInput.value = json.id;
 		    deleteForm.appendChild(idInput);
 
 			var commandInput = document.createElement("input");
@@ -165,6 +180,18 @@
 		    commandInput.name = "deleterequest";
 		    commandInput.value = true;
 		    deleteForm.appendChild(commandInput);
+
+			var dateInput = document.createElement("input");
+		    dateInput.type = "hidden";
+		    dateInput.name = "dtravel";
+		    dateInput.value = json.flight_date;
+		    deleteForm.appendChild(dateInput);
+
+			var dataInput = document.createElement("input");
+		    dataInput.type = "hidden";
+		    dataInput.name = "reqdat";
+		    dataInput.value = JSON.stringify(json);
+		    deleteForm.appendChild(dataInput);
 
 			document.body.appendChild(deleteForm);
 			deleteForm.submit();

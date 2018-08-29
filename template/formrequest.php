@@ -1,5 +1,5 @@
-<?php 
-if(count(get_included_files()) ==1) 
+<?php
+if(count(get_included_files()) ==1)
 	include("index.php");
 
 ?>
@@ -16,7 +16,7 @@ if(count(get_included_files()) ==1)
 				</div>
 				<div class="w3-quarter">
 					<label>Time of Travel</label>
-					<input type = "time" name="ttravel" class="w3-input" required>				
+					<input type = "time" name="ttravel" class="w3-input" required>
 				</div>
 			</div>
 			<div class="w3-row w3-tiny">
@@ -58,7 +58,7 @@ if(count(get_included_files()) ==1)
 							<label>Corporate</label>
 							<div class="hide spdiv autocomplete" id="corporate">
 								<input class="spel w3-input" type="text" name="corporate_id" id="corporate_id" placeholder="Corporate" required disabled>
-							</div>							
+							</div>
 						</div>
 						<div class="w3-quarter">
 							<input type = "radio" name="ctype" value="3" required onclick = "addInfo(this.value, 'bank', 'bank_id|card_no');">
@@ -68,7 +68,7 @@ if(count(get_included_files()) ==1)
 								<input class="spel w3-input" type="text" name = "bank_id" id="bank_id" placeholder="Bank Name" required disabled>
 							</div>
 						</div>
-					</div>					
+					</div>
 				</div>
 				<div class="w3-third w3-padding">
 						<table class="w3-table-all w3-card-4" style=" table-layout: fixed;">
@@ -83,7 +83,7 @@ if(count(get_included_files()) ==1)
 										<input class="w3-input" type = "text" required name = "req[other]" disabled id = "other_description">
 									</div>
 								</td></tr>
-						</table>				
+						</table>
 				</div>
 			</div>
 			<div class="w3-row-padding w3-tiny" style="margin:16px 8px 16px 8px;">

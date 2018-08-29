@@ -24,6 +24,7 @@ class DashDat{
     $pasxArr = array();
     $recArr = array();
     $clients[1] = array();
+		$payment = array();
 
     for($i=1;$i<4;$i++){
       $paxArr[$i] = 0;
@@ -38,7 +39,7 @@ class DashDat{
 
     for($i=0;$i<count($rd);$i++){
       $mop = $rd[$i]['mode_of_payment'];
-      $dailyDat = $this->popupateMonthArr($rd[$i],$dailyDat);
+      $dailyDat = $this->popupdateMonthArr($rd[$i],$dailyDat);
       $paxArr[$mop]+= $rd[$i]['no_of_passengers'];
       $recArr[$mop]++;
       if($mop==1){
@@ -60,13 +61,19 @@ class DashDat{
           $uinreccount++;
         }
         if($rd[$i]['invoice'] > 0){
+					$invoiced[$mop] = $this->juxtaposition($invoiced[$mop], $rd[$i]);
           if(isset($invoices[$mop][$rd[$i]['invoice']]))
             $invoices[$mop][$rd[$i]['invoice']]++;
           else $invoices[$mop][$rd[$i]['invoice']] = 1;
-          if(is_null($rd[$i]['inv_paid_on'])){
-            $invoiced[$mop] = $this->juxtaposition($invoiced[$mop], $rd[$i]);
-          }
-          else {
+
+					//check if partially paid. This will be added to Recovered
+					if(is_null($rd[$i]['inv_paid_on']) && ($rd[$i]['inv_amount'] != $rd[$i]['inv_arrear'])){
+						if(!isset($payment[$mop][$rd[$i]['invoice']])){
+							$payment[$mop][$rd[$i]['invoice']] = $rd[$i]['inv_amount'] - $rd[$i]['inv_arrear'];
+							$recovered[$mop]['amount'] += $payment[$mop][$rd[$i]['invoice']];
+						}
+					}
+          else if($rd[$i]['inv_arrear'] == 0){
             $recovered[$mop]= $this->juxtaposition($recovered[$mop], $rd[$i]);
             $invoicePaid[$mop][$rd[$i]['invoice']] = $rd[$i]['inv_ref'];
           }
@@ -87,13 +94,13 @@ class DashDat{
     $this->month = $month;
   }
 	public function getDonut(){
-		$recoveredRecords = 0;
+		$recoveredRecords = $this->recovered[1]['count'];
 		$unInvoicedRecords = 0;
 		$invoicedRecords = 0;
-		for($i=1;$i<4;$i++){
+		for($i=2;$i<4;$i++){
 			$recoveredRecords += $this->recovered[$i]['count'];
 			$unInvoicedRecords += $this->unInvoiced[$i]['count'];
-			$invoicedRecords += $this->invoiced[$i]['count'];
+			$invoicedRecords += ($this->invoiced[$i]['count'] - $this->recovered[$i]['count']);
 		}
 		return $invoicedRecords.",".$unInvoicedRecords.",".$recoveredRecords;
 	}
@@ -105,6 +112,7 @@ class DashDat{
 			$paidAmount += $this->recovered[$i]['amount'];
 			$pendingAmount += ($this->unInvoiced[$i]['amount'] + $this->invoiced[$i]['amount']);
 		}
+		$pendingAmount -= $paidAmount;
 		return $cashAmount.",".$paidAmount.",".$pendingAmount;
 	}
   private function init($arr){
@@ -117,7 +125,7 @@ class DashDat{
 
   private function juxtaposition($stream, $r){
   		$stream['amount'] += $r['amount'];
-  		$stream['record'][$stream['count']] = $r;
+  		//$stream['record'][$stream['count']] = $r;
   		$stream['count']++;
   		return $stream;
   	}
@@ -134,7 +142,7 @@ class DashDat{
     return $dayArr;
   }
 
-  private function popupateMonthArr($r, $dayArr){
+  private function popupdateMonthArr($r, $dayArr){
     $dayArr[$r['flight_date']][$r['mode_of_payment']]['amount'] += $r['amount'];
     $dayArr[$r['flight_date']][$r['mode_of_payment']]['pax'] += $r['no_of_passengers'];
     $dayArr[$r['flight_date']][$r['mode_of_payment']]['request']++;
