@@ -67,8 +67,21 @@ function editAssigned(divid, e){
 	if(x == 13){
 		var curdiv = document.getElementById(divid);
 		curdiv.blur();
-		var content = curdiv.textContent;
+		var content = curdiv.textContent.trim();
 		ajaxFunction("changeassigned", content, divid);
+
+		y = document.getElementById(divid+'-changed');
+		if(y == null){
+			var x = document.createElement("INPUT");
+	    x.setAttribute("type", "hidden");
+	    x.setAttribute("value", content);
+	    x.setAttribute("id", divid+'-changed');
+	    document.body.appendChild(x);
+		}
+		else {
+			document.getElementById(divid+'-changed').value = content;
+		}
+
 	}
 }
 
@@ -165,7 +178,7 @@ function ajaxFunction(instruction, execute_id, divid){
 			var queryString = "?newassgn="+encodeURIComponent(execute_id);
 			queryString += "&id="+id;
 			//alert(queryString);
-			ajaxRequest.open("GET", "utils/update.php" + queryString, true);
+			ajaxRequest.open("GET", "../../utils/update.php" + queryString, true);
 			ajaxRequest.send();
 		}
 }

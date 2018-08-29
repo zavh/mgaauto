@@ -119,6 +119,11 @@
 	autocomplete(document.getElementById("bank_id"), jsbanks);
 
 	function loadDoc(ed) {
+		//alert(ed['id']);
+		var x = document.getElementById('asgn-'+ed['id']+'-changed');
+		if(x != null)
+			ed['assigned_to'] = x.value.trim();
+
 		document.getElementById('predata').value = JSON.stringify(ed);
 		document.getElementById('newbill').style.display='block'
 		document.getElementsByName('pnumber')[0].value=ed['no_of_passengers'];

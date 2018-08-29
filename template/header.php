@@ -26,7 +26,7 @@ else exit;
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.0.1">
 		<script src="<?php echo JSDIR;?>/autocomplete.js"></script>
 		<title> MGA Voucher Application</title>
-		<script src="<?php echo JSDIR;?>/site.js"></script>
+		<script src="<?php echo JSDIR;?>/site.js?version=0.1.3"></script>
 	</head>
 
 	<body onclick="upActivityCounter()" onload="upActivityCounter()" class="w3-gray">
