@@ -228,6 +228,9 @@ function searchInv(e, el){
         ajaxInvFunction('searchByRef', criteria, 'paidInvoiceDiv');
       }
     }
+    else if(el == 'payperiod'){
+      ajaxInvFunction('searchByPeriod', searchInput, 'paidInvoiceDiv');
+    }
   }
 }
 
@@ -251,23 +254,24 @@ function ajaxInvFunction(instruction, execute_id, divid){
 						}
 				}
 		}
-		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
 				if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
 				    var ajaxDisplay = document.getElementById(divid);
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
 	   }
-//Changing the assigned service provider
 		if(instruction == "searchByRef"){
 			var criteria = JSON.stringify(execute_id);
 			var queryString = "?search=byref&criteria="+criteria;
-			//alert(queryString);
+			ajaxRequest.open("GET", "invoicePAIDarchive.php" + queryString, true);
+			ajaxRequest.send();
+		}
+    if(instruction == "searchByPeriod"){
+			var queryString = "?search=bydate&datestring="+execute_id;
 			ajaxRequest.open("GET", "invoicePAIDarchive.php" + queryString, true);
 			ajaxRequest.send();
 		}
     if(instruction == "resetSearchArea"){
-			//alert(queryString);
 			ajaxRequest.open("GET", "invoicePAIDarchive.php", true);
 			ajaxRequest.send();
 		}
