@@ -154,21 +154,25 @@ function processInvoice(){
     var ctype = selectBox.options[selectBox.selectedIndex].value;
     var ctype_id = '';
     if(ctype==3){
-        ctype_id = document.getElementById("el-2").value;
+        ctype_id = document.getElementById("el-3").value;
         if(ctype_id == ''){
             alert("Corporate Name is Empty!");
-            return;
+            return false;
         }
     }
-    if(ctype==2){
-        ctype_id = document.getElementById("el-3").value;paydiv
+    else if(ctype==2){
+        ctype_id = document.getElementById("el-2").value;
         if(ctype_id == ''){
             alert("Bank Code is Empty!");
-            return;
+            return false;
         }
     }
     if(ctype == 2 || ctype == 3){
         genInvoice(ctype, ctype_id, fromd, tod);
+    }
+    else {
+      alert('No Customer Type selected');
+      return false;
     }
 }
 function deleteInvoice(id, ref, command){

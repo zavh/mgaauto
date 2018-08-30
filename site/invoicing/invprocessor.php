@@ -55,8 +55,6 @@ if($_POST['invsav']){
 	for($i=0;$i<count($obj->requestids);$i++){
 		$reqObj->updateRecord('invoice', $lid, 'id', $obj->requestids[$i]);
 	}
-	//Rasing flag for month updateRecord
-//	monthUpdated($con, $obj->invfromd, '1');
 }
 
 //open or create the file

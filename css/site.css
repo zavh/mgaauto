@@ -35,6 +35,14 @@ a.viewmode.active{
 .dot {
     height: 12px;
     width: 12px;
+		line-height:12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-large {
+    height: 30px;
+    width: 30px;
+		line-height:30px;
     //background-color: #bbb;
     border-radius: 50%;
     display: inline-block;

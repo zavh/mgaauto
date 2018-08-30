@@ -7,7 +7,7 @@ if(count(get_included_files()) ==1) {
 
 <div class="w3-card-4 w3-display-container report-selector w3-text-black" id="reportform">
     <!-- Invoice Form Starts-->
-    <form method="POST" action="" autocomplete="off">
+
     <table style="width:100%;height:100%;" class="w3-display-top-middle w3-tiny">
       <tr><th style="text-align:right;width:40%">From:</th>
         <td>
@@ -46,7 +46,7 @@ if(count(get_included_files()) ==1) {
         </td>
       </tr>
     </table>
-    </form>
+    
     <div class="w3-display-bottom-middle w3-center"><button class="report-selector-toggle" id="selectorshow" onclick="showReportSelector('up')">&#8743;</button></div>
     <!-- Invoice Form Ends-->
 </div>

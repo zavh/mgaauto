@@ -9,6 +9,7 @@
 	$stylemode = "background:#eee";
 	$classmode = "w3-light-gray";
 	$pmntpanel = '';
+	$paidSeal =  '';
 	if(isset($_POST['command'])){
 		if($_POST['command'] == 'archive'){
 			$inv_id = $_POST['invid'];
@@ -35,6 +36,7 @@
 				$editmode = '';
 				$classmode = '';
 				$stylemode = '';
+				$paidSeal = "background: url('".IMAGEFOLDER."/paid-seal.png') no-repeat right bottom;";
 			}
 		}
 		else
@@ -78,7 +80,7 @@
 					$condition .= "AND bank.bank_code = '".$_POST['name']."' ";
 				}
 			}
-			$sql = "SELECT * FROM $tables WHERE `flight_date` BETWEEN '$startdate' AND '$enddate' $condition ORDER BY `flight_date` ASC";
+			$sql = "SELECT * FROM $tables WHERE `invoice`=0 AND `flight_date` BETWEEN '$startdate' AND '$enddate' $condition ORDER BY `flight_date` ASC";
 			$reqobj = new DbTables($con, 'request');
 			$dr = $reqobj->getSqlResult($sql); //DB Result
 			#### Request IDs affected by the invoice ###
@@ -189,7 +191,7 @@ function getPayments($inv_id, $con, $mode){
 <page size="A4">
 	<?php echo $pmntpanel;?>
 <div class="w3-container w3-margin w3-small" style="font-family:'Times New Roman', Times, serif;">
-<div class="w3-row w3-center" id="printdiv"><a href="javascript:void(0)" class="nodec" onclick="publishInvoice('<?php echo $savetodb;?>')"> 🖨</a>
+<div class="w3-row w3-center w3-large" id="printdiv"><a href="javascript:void(0)" class="nodec dot-large w3-white" onclick="publishInvoice('<?php echo $savetodb;?>')"> 🖨</a>
 </div>
 	<div class="w3-margin">
 		<div class="w3-row" style="font-weight: bold;">
@@ -231,7 +233,7 @@ function getPayments($inv_id, $con, $mode){
 </page>
 <style>
 body {
-    //background: url("<?php echo IMAGEFOLDER;?>/paid-rectangle-stamp-4.png") no-repeat right top;
+    <?php echo $paidSeal;?>
 }
 table#invtab{
 	width:100%;

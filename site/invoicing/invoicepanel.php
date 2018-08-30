@@ -2,7 +2,7 @@
 if(count(get_included_files()) ==1)
 	include("index.php");
 function formatInvoiceTab($dr, $ctype){
-	if($ctype == -1){
+//	if($ctype == -1){
 		$uninsum = array(); // uninvoiced summary
 		for($i=0;$i<count($dr);$i++){
 			$fd = $dr[$i]['flight_date'];
@@ -49,7 +49,7 @@ function formatInvoiceTab($dr, $ctype){
 							  <tr style='border-bottom:1px solid rgba(0,0,0,0.2)'>
 								<td>$corpname</td>
 								<td>".$values['count']."</td>
-								<td><a
+								<td class='w3-center'><a
 											href='javascript:void(0)'
 											class='nodec w3-light-blue dot'
 											onclick=\"genInvoice(3, '$corpname', '$fromd', '$tod')\"
@@ -78,7 +78,7 @@ function formatInvoiceTab($dr, $ctype){
 							  <tr style='border-bottom:1px solid rgba(0,0,0,0.2)'>
 								<td>$bankcode</td>
 								<td>".$values['count']."</td>
-								<td><a
+								<td class='w3-center'><a
 											href='javascript:void(0)'
 											class='nodec w3-lime dot'
 											onclick=\"genInvoice(2, '$bankcode', '$fromd', '$tod')\"
@@ -93,6 +93,6 @@ function formatInvoiceTab($dr, $ctype){
 		$outputtab['corptab'] = $corptab;
 		$outputtab['banktab'] = $banktab;
 		return $outputtab;
-	}
+	//}
 }
 ?>

@@ -11,6 +11,7 @@
 
 	if(isset($_POST['startdate'])){
 		$enddate = $_POST['startdate'];
+		print_r($_POST);
 	}
 	if(isset($_POST['enddate'])){
 		$enddate = $_POST['enddate'];
@@ -26,15 +27,7 @@
 		$allowinvoice = 'false';
 		$tables = "`requests`";
 
-		if($_POST['client_type'] == '0'){
-			$ctype = 0;
-		}
-
-		if($_POST['client_type'] == '1'){
-			$condition = "AND `client_type` = 1 ";
-			$ctype = 1;
-		}
-		if($_POST['client_type'] == '2'){
+		if($_POST['client_type'] == '3'){
 			$tables .= ", `corporate` ";
 			$condition = "AND `client_type` = 2 AND requests.corporate_id=corporate.corporate_id ";
 			$ctype = 2;
@@ -43,7 +36,7 @@
 				$condition .= "AND corporate.corporate_name = '".$_POST['corp_id']."' ";
 			}
 		}
-		if($_POST['client_type'] == '3'){
+		if($_POST['client_type'] == '2'){
 			$tables .= ", `bank`";
 			$condition = "AND `client_type` = 3 AND requests.bank_id = bank.bank_id ";
 			$ctype = 3;
@@ -52,9 +45,10 @@
 				$condition .= "AND bank.bank_code = '".$_POST['bank_id']."' ";
 			}
 		}
-		$sql = "SELECT * FROM $tables WHERE `flight_date` BETWEEN '$startdate' AND '$enddate' $condition";
+		//$sql = "SELECT * FROM $tables WHERE `flight_date` BETWEEN '$startdate' AND '$enddate' $condition";
 	}
 	###########################MAIN PRESENTER TABLES FORMATTER###########################
+
 	$reqobj = new DbTables($con, 'request');
 	$dr = $reqobj->getSqlResult($sql); //DB Result
 
@@ -73,12 +67,9 @@
 	$menuitems[1]['include']  = TEMPLATEDIR."/partialInvoiceForm.php";
 	$menuitems[1]['details']  = "<a href='javascript:void(0)' onclick=\"showReportSelector('down')\" class='nodec'>Partial Invoice</a>";
 
-//	$menuitems[2]['classes']  = 'w3-center w3-small darkestmenu';
-//	$menuitems[2]['details']  = "<a href='javascript:void(0)' onclick=\"showArrearSummary('down')\" class='nodec'>Arrear Summary</a>";
 	$pagetitle = "Invoice and Payment Management";
 
 	include(TEMPLATEDIR."/topmenu.php");
-	//include(TEMPLATEDIR."/partialInvoiceForm.php");
 	?>
 	<!-- Top Menu Ends-->
 	<!--########################### DIV FOR MAIN PRESENTER TABLES STARTS ###########################-->
@@ -118,7 +109,7 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/invoice.js?version=0.4"></script>
+<script src="<?php echo JSDIR;?>/invoice.js?version=0.6"></script>
 <script>
 		var jscorporates = [<?php echo $corpjvar;?>];
 		var jsbanks = [<?php echo $bankjvar;?>];
