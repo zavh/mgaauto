@@ -24,8 +24,8 @@ if($_POST['command'] == 'newuser'){
 		$userdata['pwd'] = $pwd;
 		$userdata['level'] = $_POST['level'];
 		if($crobj->insertRecord($userdata))
-			header ('Location:'.$_SERVER['HTTP_REFERER']."?response=100&user=$uid");
-		else header ('Location:'.$_SERVER['HTTP_REFERER']."?response=1&user=$uid");
+			echo "User created successfully|101";
+		else echo "User creation failed. User already exists|3";
 	}
 }
 if($_POST['command'] == "changepasswd"){
@@ -36,20 +36,20 @@ if($_POST['command'] == "changepasswd"){
 	$value = $_SESSION['table_id'];
 	$credentials = $crobj->valueLookUp($fields, $value, 'table_id');
 	if(!password_verify ( $pwd , $credentials[0]['pwd'] )){
-		header ('Location:'.$_SERVER['HTTP_REFERER']."?response=2&user=".$_SESSION['uid']);
+		echo "Failed to match current password|3";
 	}
 	else {
 		$pwd = password_hash($con->real_escape_string($_POST['newpassword']), PASSWORD_DEFAULT);
 		$crobj->updateRecord('pwd', $pwd, 'table_id', $_SESSION['table_id']);
-		header ('Location:'.MAINHOST."/logout.php");
+		echo "Password changed. Auto logout in 2 seconds|103";
 	}
 }
 if($_POST['command'] == "deleteuser"){
 	if(!($_SESSION['level']>9))
-		header ('Location:'.$_SERVER['HTTP_REFERER']."?response=3");
+		echo "User Unauthorized to execute level change|3";
 	else {
 		$crobj->deleteRecord('table_id', $_POST['table_id']);
-		header ('Location:'.$_SERVER['HTTP_REFERER']."?response=102");
+		echo "User Deleted successfully|103";
 	}
 }
 if($_POST['command'] == "changelevel"){

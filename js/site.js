@@ -212,3 +212,11 @@ function checkActivity(){
         window.location.assign("http://localhost:8080/mga/logout.php")}
     console.log(lastActivity+" - "+nowTimeStamp+" And difference is "+diff);
 }
+function inputFocus(el){
+	el.parentElement.classList.add('focused');
+}
+function inputBlur(el){
+	var inputVal = el.value;
+	if(inputVal == '')
+		el.parentElement.classList.remove('focused');
+}

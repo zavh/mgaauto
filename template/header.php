@@ -23,10 +23,10 @@ else exit;
 	<head>
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/w3s.css">
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/autocomplete.css">
-		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.0.2">
+		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.0.7">
 		<script src="<?php echo JSDIR;?>/autocomplete.js"></script>
 		<title> MGA Voucher Application</title>
-		<script src="<?php echo JSDIR;?>/site.js?version=0.1.3"></script>
+		<script src="<?php echo JSDIR;?>/site.js?version=0.1.5"></script>
 	</head>
 
 	<body onclick="upActivityCounter()" onload="upActivityCounter()" class="w3-gray">

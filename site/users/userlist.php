@@ -25,17 +25,17 @@ for($i=0;$i<count($users);$i++){
 	$userTab .= "<tr>
 					<td>".$users[$i]['uid']."</td>
 					<td>
-						<input 
-							type='number' 
-							id='il-$i' 
-							max=10 min=1 
-							value='".$users[$i]['level']."' 
-							style='width:40px;' 
+						<input
+							type='number'
+							id='il-$i'
+							max=10 min=1
+							value='".$users[$i]['level']."'
+							style='width:40px;'
 							onkeypress=\"changeLevel('il-$i','orig-il-$i',".$users[$i]['table_id'].",event)\">
 						<input type='hidden' id='orig-il-$i' value='".$users[$i]['level']."'>
 					</td>
-					<td > 
-						<a href='javascript:void(0)' onclick=\"deleteUser('".$users[$i]['table_id']."')\">Delete</a>
+					<td >
+						<a href='javascript:void(0)' onclick=\"deleteUser('".$users[$i]['table_id']."','".$users[$i]['uid']."')\">Delete</a>
 						<a href='javascript:void(0)' onclick=\"userAjaxFunction('resetpass','".$users[$i]['table_id']."','')\">Reset Password</a>
 					</td>
 				</tr>";
@@ -54,7 +54,7 @@ for($i=0;$i<count($users);$i++){
 						<td>Action:</td>
 						<td>
 							<a href='javascript:void(0)' onclick=\"deleteUser('".$users[$i]['table_id']."')\">Delete</a>
-							<a href='javascript:void(0)' onclick='ajaxFunction(".$users[$i]['table_id'].")'>Reset Password</a>	
+							<a href='javascript:void(0)' onclick='ajaxFunction(".$users[$i]['table_id'].")'>Reset Password</a>
 						</td>
 					  </tr>";
 }
