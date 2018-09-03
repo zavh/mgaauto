@@ -1,6 +1,8 @@
 <?php
-if(count(get_included_files()) ==1)
+if(count(get_included_files()) ==1){
 	include("index.php");
+	exit();
+}
 
 ?>
 		<form autocomplete="off" method = "post" action = "requestpost.php" id="billform">
@@ -37,7 +39,7 @@ if(count(get_included_files()) ==1)
 					</div>
 					<div class="w3-row-padding">
 						<div class="w3-half"><input class="w3-input" type="number" step = "0.01" name="amount" placeholder="Amount" required ></div>
-						<div class="w3-half">
+						<div class="w3-half" style='margin-top:5px'>
 							<select class="w3-select" id="payment" required placeholder="Mode of Payment" disabled>
 								<option disabled selected value="0"> Mode of Payment </option>
 								<option value = "1" >Cash</option>
@@ -51,7 +53,7 @@ if(count(get_included_files()) ==1)
 						<div class="w3-quarter">Client Type</div>
 						<div class="w3-quarter">
 							<input type = "radio" name="ctype" value="1" required onclick = "addInfo(this.value,'','')">
-							<label class="w3-wide">Spot</label>
+							<label>Spot</label>
 						</div>
 						<div class="w3-quarter">
 							<input type = "radio" name="ctype" value="2" required onclick = "addInfo(this.value,'corporate','corporate_id')">
@@ -79,10 +81,9 @@ if(count(get_included_files()) ==1)
 							<tr><td>Baggage store	 </td><td><input type = "checkbox" name = "req[bag_store]" ></td></tr>
 							<tr><td>Others			 </td><td><input type = "checkbox" id = "others" onclick = "toggle()"></td></tr>
 							<tr><td colspan=2>
-								<div class="hide" id="hide">
-										<input class="w3-input" type = "text" required name = "req[other]" disabled id = "other_description">
-									</div>
-								</td></tr>
+										<input class="w3-input" type = "text" name="req[other]" id = "other_description" disabled required placeholder='Special Requirement'>
+									</td>
+							</tr>
 						</table>
 				</div>
 			</div>

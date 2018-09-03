@@ -19,6 +19,40 @@
 <style>
 .entryAction{
 }
+.summaryTable{
+	width:100%;
+	border-collapse: collapse;
+	background-color: #eee;
+}
+.summaryTable tr th{
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	text-align:left;
+	background-color: #ddd;
+	font-size: 10px;
+}
+.summaryTable tr.card{
+	border-top: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	color: rgba(10,129,20,1);
+	vertical-align: middle;
+}
+.summaryTable tr.corpDetails{
+	display:none;
+}
+.summaryTable tr.cardDetails{
+	display:none;
+}
+.summaryTable tr.corpDetailsShow{
+	border-top: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	color: rgba(129,20,20,0.9);
+}
+.summaryTable tr.cardDetailsShow{
+	border-top: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	color: rgba(90,20,220,0.9);
+}
 @media print {
 	#dayreportmenu {
       display :  none;
@@ -91,7 +125,9 @@
 				<div class="w3-container">
 					<span onclick="resetRequestModal()" class="w3-button w3-display-topright">&times;</span>
 					<div id='requestcontainer'>
-						<?php include(TEMPLATEDIR."/formrequest.php")?>
+						<?php
+						 	$otherid = "nrOther";
+							include(TEMPLATEDIR."/formrequest.php")?>
 					</div>
 				</div>
 			</div>
@@ -110,126 +146,11 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-
+<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.2"></script>
 <script>
 	var jscorporates = [<?php echo $corpjvar;?>];
 	var jsbanks = [<?php echo $bankjvar;?>];
 
 	autocomplete(document.getElementById("corporate_id"), jscorporates);
 	autocomplete(document.getElementById("bank_id"), jsbanks);
-
-	function loadDoc(ed) {
-		//alert(ed['id']);
-		var x = document.getElementById('asgn-'+ed['id']+'-changed');
-		if(x != null)
-			ed['assigned_to'] = x.value.trim();
-
-		document.getElementById('predata').value = JSON.stringify(ed);
-		document.getElementById('newbill').style.display='block'
-		document.getElementsByName('pnumber')[0].value=ed['no_of_passengers'];
-		document.getElementsByName('direction')[ed.arrival_departure].checked = true;
-		document.getElementsByName('dtravel')[0].value=ed['flight_date'];
-		document.getElementsByName('ttravel')[0].value=ed['flight_time'];
-		document.getElementsByName('pname')[0].value=ed['name'];
-		document.getElementsByName('tnumber')[0].value=ed['contact'];
-		document.getElementsByName('fnumber')[0].value=ed['flight_no'];
-		document.getElementsByName('provider')[0].value=ed['assigned_to'];
-		document.getElementsByName('amount')[0].value=ed['amount'];
-		document.getElementById('payment').options[ed['mode_of_payment']].selected = 'selected';
-		document.getElementsByName('payment')[0].value = ed['mode_of_payment'];
-		var ctypeSelect = parseInt(ed['client_type'])-1;
-		document.getElementsByName('ctype')[ctypeSelect].checked = true;
-		if(ed['client_type'] == 2){
-			document.getElementById('corporate').style.display = 'inline';
-			document.getElementById('corporate_id').disabled = false;
-			document.getElementById('corporate_id').value = ed['corporate_name'];
-		}
-		if(ed['client_type'] == 3){
-			document.getElementById('bank').style.display = 'inline';
-			document.getElementById('bank_id').disabled = false;
-			document.getElementById('card_no').disabled = false;
-			document.getElementById('bank_id').value = ed['bank_code'];
-			document.getElementById('card_no').value = ed['card_no'];
-		}
-		document.getElementById('editrequest').disabled = false;
-		document.getElementById('predata').disabled = false;
-		if(ed['requirements']){
-			var reqObj = ed['req_item'];
-			for(var i=0;i<reqObj.length;i++){
-				if(reqObj[i]=='others'){
-					document.getElementById("others").checked = true;
-					document.getElementById("hide").style.display = 'inline';
-					document.getElementById("other_description").value = reqObj[i+1];
-					document.getElementById("other_description").disabled = false;
-				}
-				else
-					document.getElementsByName("req["+reqObj[i]+"]")[0].checked = true;
-			}
-		}
-	}
-	function deleteEntry(json){
-		var x = confirm("This will Delete the entry permanently. Confirm to proceed.");
-		if(x == true){
-			var deleteForm = document.createElement("form");
-				deleteForm.method = "POST";
-				deleteForm.action = "requestpost.php";
-
-			var idInput = document.createElement("input");
-		    idInput.type = "hidden";
-		    idInput.name = "reqid";
-		    idInput.value = json.id;
-		    deleteForm.appendChild(idInput);
-
-			var commandInput = document.createElement("input");
-		    commandInput.type = "hidden";
-		    commandInput.name = "deleterequest";
-		    commandInput.value = true;
-		    deleteForm.appendChild(commandInput);
-
-			var dateInput = document.createElement("input");
-		    dateInput.type = "hidden";
-		    dateInput.name = "dtravel";
-		    dateInput.value = json.flight_date;
-		    deleteForm.appendChild(dateInput);
-
-			var dataInput = document.createElement("input");
-		    dataInput.type = "hidden";
-		    dataInput.name = "reqdat";
-		    dataInput.value = JSON.stringify(json);
-		    deleteForm.appendChild(dataInput);
-
-			document.body.appendChild(deleteForm);
-			deleteForm.submit();
-		}
-	}
-	function filterCtype() {
-
-	  var sindex = document.getElementById("ctype_select").selectedIndex;
-
-	  var input, filter, table, tr, td, i;
-	  input = document.getElementById("ctype_select").options[sindex];
-	  filter = input.value.toUpperCase();
-	  table = document.getElementById("dayEntries");
-	  tr = table.getElementsByTagName("tr");
-
-	  if(filter=='ALL'){
-		  for (i = 0; i < tr.length; i++) {
-			  tr[i].style.display = "";
-		  }
-	  }
-	  else {
-		  for (i = 0; i < tr.length; i++) {
-			td = tr[i].getElementsByTagName("td")[11];
-			if (td) {
-			  if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-				tr[i].style.display = "";
-			  } else {
-				tr[i].style.display = "none";
-			  }
-			}
-		  }
-		  //Always hide Total tr
-		  tr[i-1].style.display = "none";
-	  }
-	}
 </script>
