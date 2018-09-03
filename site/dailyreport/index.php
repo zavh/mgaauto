@@ -21,7 +21,7 @@
 }
 .summaryTable{
 	width:100%;
-	border-collapse: collapse;
+	//border-collapse: collapse;
 	background-color: #eee;
 }
 .summaryTable tr th{
@@ -37,21 +37,25 @@
 	color: rgba(10,129,20,1);
 	vertical-align: middle;
 }
-.summaryTable tr.corpDetails{
-	display:none;
-}
-.summaryTable tr.cardDetails{
-	display:none;
+.summaryTable tr.cardDetailsShow{
+	border-top: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	color: rgba(90,20,220,0.9);
 }
 .summaryTable tr.corpDetailsShow{
 	border-top: 1px solid #aaa;
 	border-bottom: 1px solid #aaa;
 	color: rgba(129,20,20,0.9);
 }
-.summaryTable tr.cardDetailsShow{
+.summaryTable tr.cardMonthDetailsShow{
 	border-top: 1px solid #aaa;
 	border-bottom: 1px solid #aaa;
-	color: rgba(90,20,220,0.9);
+	color: rgba(20,170,50,0.9);
+}
+.summaryTable tr.corpMonthDetailsShow{
+	border-top: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	color: rgba(89,70,250,0.8);
 }
 @media print {
 	#dayreportmenu {
@@ -146,7 +150,7 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.2"></script>
+<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.3"></script>
 <script>
 	var jscorporates = [<?php echo $corpjvar;?>];
 	var jsbanks = [<?php echo $bankjvar;?>];

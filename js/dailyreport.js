@@ -268,8 +268,8 @@ function deleteEntry(json){
 function filterCtype() {
 
   var sindex = document.getElementById("ctype_select").selectedIndex;
-
   var input, filter, table, tr, td, i;
+
   input = document.getElementById("ctype_select").options[sindex];
   filter = input.value.toUpperCase();
   table = document.getElementById("dayEntries");
@@ -294,4 +294,35 @@ function filterCtype() {
     //Always hide Total tr
     tr[i-1].style.display = "none";
   }
+}
+
+function showPaymentDetails(el){
+  id = el.id;
+  var mode = el.innerText;
+  var showFlag = '';
+  if(mode == '+') {
+    el.innerText = '-';
+  }
+  else if(mode == '-') {
+    el.innerText = '+';
+    showFlag = 'none';
+  }
+  if(id == 'bankArrearPaymentDetails'){
+    var rows = document.getElementsByClassName('cardDetailsShow');
+  }
+  if(id == 'corpArrearPaymentDetails'){
+    var rows = document.getElementsByClassName('corpDetailsShow');
+  }
+  if(id == 'bankMonthPaymentDetails'){
+    var rows = document.getElementsByClassName('cardMonthDetailsShow');
+  }
+  if(id == 'corpMonthPaymentDetails'){
+    var rows = document.getElementsByClassName('corpMonthDetailsShow');
+  }
+  var rowcount = rows.length;
+  for(i=0;i<rowcount;i++){
+    rows[i].style.display=showFlag;
+    //rows[i].classList.add('cardDetailsShow');
+  }
+
 }
