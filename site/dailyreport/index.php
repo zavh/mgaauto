@@ -38,9 +38,7 @@
 	vertical-align: middle;
 }
 .summaryTable tr.cardDetailsShow{
-	border-top: 1px solid #aaa;
-	border-bottom: 1px solid #aaa;
-	color: rgba(90,20,220,0.9);
+	color: rgba(0,0,0,0.8);
 }
 .summaryTable tr.corpDetailsShow{
 	border-top: 1px solid #aaa;
@@ -85,23 +83,30 @@
 		$menuitems[1]['details'] .= "<a href=\"javascript:void(0)\" id=\"viewmode-3\" class=\"viewmode\" onclick=\"
 			document.getElementById('servicereport').style.display='block'\">
 			&#x2779; </a>";
-
+/*
 		$menuitems[2]['classes']  = "darkestmenu";
 	 	$menuitems[2]['details']  = "<form method=\"POST\" action=\"\" class=\"w3-center\">";
 	 	$menuitems[2]['details'] .= "<label>Report of : </label>";
 	 	$menuitems[2]['details'] .= "<input type=\"date\" name=\"reportdate\" id=\"reportdate\" required value=\"$reportdate\">";
 	 	$menuitems[2]['details'] .= "&nbsp;<input type=\"submit\" value=\"go\" style=\"height:20px;\">";
 	 	$menuitems[2]['details'] .= "</form>";
-
+*/
 	 	include(TEMPLATEDIR."/topmenu.php");
 	 ?>
 	 <!-- Top Panel Ends-->
 		<!-- Top menu ends-->
 
 		<!-- Main Body starts-->
-		<div class="w3-row w3-center w3-margin">
+		<div class='w3-row w3-left' style='margin:2px 0px 2px 8px'>
+			<form method="POST" action="" class="w3-center">
+				<label>Report of : </label>
+				<input type="date" name="reportdate" id="reportdate" required value="<?php echo $reportdate;?>">
+				&nbsp;<input type="submit" value="go">
+			</form>
+		</div>
+		<div class="w3-row w3-center" style='margin-left:8px;margin-right:8px'>
 			<div class=" w3-third " id="report">
-				<div class="w3-responsive" id="dailyreportshow" style="width:99%;">
+				<div class="w3-responsive" id="dailyreportshow" style="width:100%;">
 					<?php include("report_daily.php");
 					?>
 					<div id='reportcontainer' class='w3-row'>
@@ -109,14 +114,14 @@
 					<div id='due' class=' dayreport '><?php echo $catTabs[2];?></div>
 					<div id='card' class=' dayreport '><?php echo $catTabs[3];?></div>
 					</div>
-					<div id='summarycontainer' class=''>
+					<div id='summarycontainer'>
 						<div id='summary'><?php echo $sumTab?></div>
 					</div>
 				</div>
 			</div>
 			<div class=" w3-twothird " id="record">
-				<div class=" w3-card ">
-					<div class="w3-center w3-responsive entryreport" id="dailyrecordshow" >
+				<div class=" w3-card" style='margin:2px 4px 8px 4px'>
+					<div class="w3-center w3-responsive entryreport" id="dailyrecordshow" style='background:#333'>
 						<?php echo $entrtable; ?>
 					</div>
 				</div>
@@ -150,7 +155,7 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.3"></script>
+<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.4"></script>
 <script>
 	var jscorporates = [<?php echo $corpjvar;?>];
 	var jsbanks = [<?php echo $bankjvar;?>];

@@ -42,7 +42,7 @@ for($i=1;$i<4;$i++){
 	$drdata[$i]['mon_tot_am'] = $drdata[$i]['bf_tot_am'] + $drdata[$i]['day_tot_am'];
 	$drdata[$i]['mon_tot_rec'] = $drdata[$i]['bf_tot_rec'] + $drdata[$i]['day_tot_rec'];
 	$drdata[$i]['mon_tot_due'] = $drdata[$i]['bf_tot_due'] + $drdata[$i]['day_tot_due'];
-	$catTabs[$i] = formatCats($drdata[$i], $tabformat[$i]);
+	$catTabs[$i] = formatCats($drdata[$i], $tabformat[$i], $i);
 
 	$sumDat[$i-1] = array($sumCats[$i-1],$drdata[$i]['mon_tot_pax'], $drdata[$i]['mon_tot_am'],$drdata[$i]['mon_tot_rec'],$drdata[$i]['mon_tot_due']);
 	$paxtot +=$drdata[$i]['mon_tot_pax']; $amtot+=$drdata[$i]['mon_tot_am']; $amrec+=$drdata[$i]['mon_tot_rec']; $amdue+=$drdata[$i]['mon_tot_due'];
@@ -103,10 +103,22 @@ if($result->num_rows>0){
 $entrtable .= '</table>';
 
 
-function formatCats($row, $format){
-	$catagtable = "<table class='w3-border' style='width:100%'>";
+function formatCats($row, $format, $mop){
+	if($mop == 1) {
+		$headclass = 'w3-text-amber';
+		$gradient = 'linear-gradient(to bottom right, white, #ffc107)';
+	}
+	else if($mop == 3) {
+		$headclass = 'w3-text-lime';
+		$gradient = 'linear-gradient(to bottom right, white, #cddc39)';
+	}
+	else if($mop == 2) {
+		$headclass = 'w3-text-light-blue';
+		$gradient = 'linear-gradient(to bottom right, white, #87ceeb)';
+	}
+	$catagtable = "<table style='width:100%;margin:0px 0px 0px 1px;background-image: $gradient;'>";
 	######FORMATTING BALANCE FORWARD ROW######
-	$catagtable .= "<tr class='w3-pale-red'>";
+	$catagtable .= "<tr class='$headclass w3-dark-gray'>";
 	for($i=0;$i<$format['col'];$i++){
 		if($i==0) {
 			$catagtable .= "<td colspan=".($format['bf_offset']+1).">".$format['bf_head'][$i]."</td>";
@@ -117,7 +129,7 @@ function formatCats($row, $format){
 	}
 	$catagtable .= "</tr>";
 	######FORMATTING TABLE HEAD ROW######
-	$catagtable .= "<tr class='w3-sand'>";
+	$catagtable .= "<tr style='background:rgba(255,255,255,0.4)'>";
 	for($i=0;$i<$format['col'];$i++){
 		$catagtable .= "<th>".$format['head'][$i]."</th>";
 	}
@@ -125,7 +137,7 @@ function formatCats($row, $format){
 	######FORMATTING DAILY DATA ROWS######
 	if(isset($row['rec'])){
 		for($j=0;$j<count($row['rec']);$j++){
-			$catagtable .= "<tr class='w3-light-gray'>";
+			$catagtable .= "<tr style='background:rgba(255,255,255,0.4)'>";
 			for($i=0;$i<$format['col'];$i++){
 				if(is_null($format['data'][$i])) $catagtable .= "<td></td>";
 				else $catagtable .= "<td>".$row['rec'][$j][$format['data'][$i]]."</td>";
@@ -134,7 +146,7 @@ function formatCats($row, $format){
 		}
 	}
 	######FORMATTING DAILY DATA SUM######
-	$catagtable .= "<tr class='w3-light-gray'>";
+	$catagtable .= "<tr style='background:rgba(255,255,255,0.4)'>";
 	for($i=0;$i<$format['col'];$i++){
 		if(is_null($format['foot'][$i])) $catagtable .= "<td></td>";
 		else {
@@ -146,7 +158,7 @@ function formatCats($row, $format){
 	}
 	$catagtable .= "</tr>";
 	######FORMATTING MONTHLY DATA SUM######
-	$catagtable .= "<tr class='w3-pale-green'>";
+	$catagtable .= "<tr style='background:rgba(255,255,255,0.4)'>";
 	for($i=0;$i<$format['col'];$i++){
 		if(is_null($format['monsum'][$i])) $catagtable .= "<td></td>";
 		else {
@@ -292,6 +304,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$bank = "-";
 			$corp = "-";
 			$card_no = "-";
+			$trclass = 'w3-text-amber';
 		}
 		if($entry['client_type'] == "2"){
 			$type = "Corporate";
@@ -299,6 +312,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$card_no = "-";
 			$corp = $corps[$entry['corporate_id']];
 			$entry['corporate_name'] = $corp;
+			$trclass = 'w3-text-light-blue';
 		}
 		if($entry['client_type'] == "3"){
 			$type = "Card";
@@ -306,6 +320,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$card_no = $entry['card_no'];
 			$corp = "-";
 			$entry['bank_code'] = $bank;
+			$trclass = 'w3-text-lime';
 		}
 		if($entry['invoice']==0){
 			$actionLink  = "<a class='w3-pale-green nodec dot' href='javascript:void(0)' onclick='loadDoc(".json_encode($entry).")' title='Edit'>E</a>";
@@ -313,12 +328,12 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$actionLink .= "<a class='w3-pale-red nodec dot' href='javascript:void(0)' onclick='deleteEntry(".json_encode($entry).")' title='Delete'>D</a>";
 		}
 		else {
-			$actionLink = "<a class='w3-black dot nodec'
+			$actionLink = "<a class='w3-gray dot nodec'
 			href='javascript:void(0)'
 			onclick=\"alert('This entry has been invoiced. You need to remove the invoice first.')\"
 			title='No Action Allowed'>N</a>";
 		}
-		$entrtable .= "<tr style='border-bottom:1px solid rgba(0,0,0,0.1)'>
+		$entrtable .= "<tr style='border-bottom:1px solid rgba(255,255,255,0.1)' class='$trclass w3-hover-black'>
 						<td>".$entry['name']."</td>
 						<td>".$entry['contact']."</td>
 						<td>".$entry['flight_no']."</td>

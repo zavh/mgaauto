@@ -307,22 +307,11 @@ function showPaymentDetails(el){
     el.innerText = '+';
     showFlag = 'none';
   }
-  if(id == 'bankArrearPaymentDetails'){
-    var rows = document.getElementsByClassName('cardDetailsShow');
-  }
-  if(id == 'corpArrearPaymentDetails'){
-    var rows = document.getElementsByClassName('corpDetailsShow');
-  }
-  if(id == 'bankMonthPaymentDetails'){
-    var rows = document.getElementsByClassName('cardMonthDetailsShow');
-  }
-  if(id == 'corpMonthPaymentDetails'){
-    var rows = document.getElementsByClassName('corpMonthDetailsShow');
-  }
+  var rows = document.getElementsByClassName(id);
+
   var rowcount = rows.length;
   for(i=0;i<rowcount;i++){
     rows[i].style.display=showFlag;
-    //rows[i].classList.add('cardDetailsShow');
   }
 
 }
