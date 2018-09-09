@@ -3,7 +3,6 @@ if(!isset($_SERVER['HTTP_REFERER'])){
 	header ('Location:index.php');
 	exit;
 }
-
 	include($_SERVER['DOCUMENT_ROOT']."/mga/config/serverconfig.php");
 	require_once(TEMPLATEDIR."/header.php");
 	require_once(UTILSDIR."/commons.php");
@@ -183,6 +182,44 @@ if(!isset($_SERVER['HTTP_REFERER'])){
 		$reqObj->deleteRecord('id', $_POST['reqid']);
 		$muFlag = true;
 	}
+	else if(isset($_POST['cancelrequest'])){
+		$columns = "id, name, contact, flight_no, flight_date, flight_time,
+								no_of_passengers, arrival_departure, requirements, amount,mode_of_payment,
+								bank_id, card_no, client_type, corporate_id, assigned_to, invoice, paid";
+		$sql = "INSERT INTO `cancelled_requests` ($columns)
+						SELECT $columns
+						FROM `requests`
+						WHERE id=".$_POST['reqid'];
+		$con->query($sql);
+		$cancelReqObj = new DbTables($con, 'cancelled_requests');
+		$cancelReqObj->updateRecord('invoice', '-1', 'id', $_POST['reqid']);
+		$mdObj->delete($_POST['reqdat']);
+
+		$reqObj = new DbTables($con, 'requests');
+		$reqObj->deleteRecord('id', $_POST['reqid']);
+
+		$muFlag = true;
+	}
+	else if(isset($_POST['undocancel'])){
+		$columns = "id, name, contact, flight_no, flight_date, flight_time,
+								no_of_passengers, arrival_departure, requirements, amount,mode_of_payment,
+								bank_id, card_no, client_type, corporate_id, assigned_to, paid";
+		$sql = "INSERT INTO `requests` ($columns)
+						SELECT $columns
+						FROM `cancelled_requests`
+						WHERE id=".$_POST['reqid'];
+		$con->query($sql);
+		$postdat = json_decode($_POST['reqdat'], true);
+		//echo "<pre>";print_r($postdat);echo "</pre>";
+		$mdata['payment'] = $postdat['mode_of_payment'];
+		$mdata['amount'] = $postdat['amount'];
+		$mdata['pnumber'] = $postdat['no_of_passengers'];
+		$mdata['dtravel'] = $postdat['flight_date'];
+		$mdObj->add($mdata);
+		$muFlag = true;
+		$reqObj = new DbTables($con, 'cancelled_requests');
+		$reqObj->deleteRecord('id', $_POST['reqid']);
+	}
 	######### DELETE ENTRY/Bill REQUEST HANDLER ENDS ##########
 	########## NEW ENTRY/BILL REQUEST INSERT STARTS ###########
 	else {
@@ -270,7 +307,6 @@ if(!isset($_SERVER['HTTP_REFERER'])){
 						'paid'=>$paid
 						);
 		$reqObj = new DbTables($con, 'requests');
-		//monthUpdated($con, $flight_date, '1');
 		return $reqObj->insertRecord($reqarr);
 	}
 

@@ -5,7 +5,10 @@ if(isset($_POST['reportdate'])){
 	$_SESSION['dailyreportdate'] = $_POST['reportdate'];
 }
 
-$sql = "SELECT * FROM `requests` WHERE `flight_date`= '$reportdate' ORDER BY `bank_id`, `corporate_id` ";
+$sql = "SELECT * FROM `requests` WHERE `flight_date`= '$reportdate'
+				UNION
+				SELECT * FROM `cancelled_requests` WHERE `flight_date`= '$reportdate' ORDER BY `bank_id`, `corporate_id`
+				";
 
 ////////////////////Preparing Spot Table////////////////////
 $drdata = findBalFor($reportdate, $con);
@@ -288,15 +291,18 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 
 		if($entry['mode_of_payment']==1) {
 			$mop = "Cash";
-			$spotrec++;
+			if($entry['invoice']>-1)
+				$spotrec++;
 		}
 		if($entry['mode_of_payment']==2) {
 			$mop = "Card";
-			$cardrec++;
+			if($entry['invoice']>-1)
+				$cardrec++;
 		}
 		if($entry['mode_of_payment']==3) {
-			$corprec++;
 			$mop = "Due";
+			if($entry['invoice']>-1)
+				$corprec++;
 		}
 
 		if($entry['client_type'] == "1"){
@@ -322,10 +328,19 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$entry['bank_code'] = $bank;
 			$trclass = 'w3-text-lime';
 		}
-		if($entry['invoice']==0){
+		if($entry['invoice']<0){
+			$trclass = 'w3-text-red';
+			$actionLink  = "<a class='w3-red nodec dot' href='javascript:void(0)' onclick='undoCancel(".json_encode($entry).")' title='Undo Cancel'>U</a>";
+			$totpax -= $entry['no_of_passengers'];
+			$totam -= $entry['amount'];
+			$count--;
+		}
+		else if($entry['invoice']==0){
 			$actionLink  = "<a class='w3-pale-green nodec dot' href='javascript:void(0)' onclick='loadDoc(".json_encode($entry).")' title='Edit'>E</a>";
 			$actionLink .= "&nbsp;";
 			$actionLink .= "<a class='w3-pale-red nodec dot' href='javascript:void(0)' onclick='deleteEntry(".json_encode($entry).")' title='Delete'>D</a>";
+			$actionLink .= "&nbsp;";
+			$actionLink .= "<a class='w3-aqua nodec dot' href='javascript:void(0)' onclick='cancelEntry(".json_encode($entry).")' title='Cancel'>C</a>";
 		}
 		else {
 			$actionLink = "<a class='w3-gray dot nodec'

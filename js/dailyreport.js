@@ -230,6 +230,76 @@ function loadDoc(ed) {
     }
   }
 }
+function cancelEntry(json){
+	var x = confirm("This will Cancel the Request. Confirm to proceed.");
+	if(x == true){
+		var cancelForm = document.createElement("form");
+      cancelForm.method = "POST";
+      cancelForm.action = "requestpost.php";
+
+    var idInput = document.createElement("input");
+      idInput.type = "hidden";
+      idInput.name = "reqid";
+      idInput.value = json.id;
+      cancelForm.appendChild(idInput);
+
+    var commandInput = document.createElement("input");
+      commandInput.type = "hidden";
+      commandInput.name = "cancelrequest";
+      commandInput.value = true;
+      cancelForm.appendChild(commandInput);
+
+    var dateInput = document.createElement("input");
+      dateInput.type = "hidden";
+      dateInput.name = "dtravel";
+      dateInput.value = json.flight_date;
+      cancelForm.appendChild(dateInput);
+
+    var dataInput = document.createElement("input");
+      dataInput.type = "hidden";
+      dataInput.name = "reqdat";
+      dataInput.value = JSON.stringify(json);
+      cancelForm.appendChild(dataInput);
+
+    document.body.appendChild(cancelForm);
+    cancelForm.submit();
+	}
+}
+function undoCancel(json){
+	var x = confirm("Please confirm Undoing the cancel.");
+	if(x == true){
+		var undocancelForm = document.createElement("form");
+			undocancelForm.method = "POST";
+			undocancelForm.action = "requestpost.php";
+
+		var idInput = document.createElement("input");
+      idInput.type = "hidden";
+      idInput.name = "reqid";
+      idInput.value = json.id;
+      undocancelForm.appendChild(idInput);
+
+		var commandInput = document.createElement("input");
+      commandInput.type = "hidden";
+      commandInput.name = "undocancel";
+      commandInput.value = true;
+      undocancelForm.appendChild(commandInput);
+
+		var dateInput = document.createElement("input");
+      dateInput.type = "hidden";
+      dateInput.name = "dtravel";
+      dateInput.value = json.flight_date;
+      undocancelForm.appendChild(dateInput);
+
+		var dataInput = document.createElement("input");
+      dataInput.type = "hidden";
+      dataInput.name = "reqdat";
+      dataInput.value = JSON.stringify(json);
+      undocancelForm.appendChild(dataInput);
+
+    document.body.appendChild(undocancelForm);
+    undocancelForm.submit();
+	}
+}
 function deleteEntry(json){
   var x = confirm("This will Delete the entry permanently. Confirm to proceed.");
   if(x == true){

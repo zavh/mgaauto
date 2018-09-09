@@ -155,7 +155,7 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.4"></script>
+<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.3"></script>
 <script>
 	var jscorporates = [<?php echo $corpjvar;?>];
 	var jsbanks = [<?php echo $bankjvar;?>];
