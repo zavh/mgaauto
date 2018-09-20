@@ -16,21 +16,42 @@ $tabheads = "<table style='width:100%;border-collapse:collapse'>
 $sql = "SELECT * FROM `invoice`, `corporate` WHERE `inv_ctype` = 3 AND invoice.inv_ctype_id = corporate.corporate_id AND inv_paid_on is NULL";
 $corpRes = $invObj->getSqlResult($sql);
 $upCorpTab = $tabheads;
-$upCorpTab .= getInvoiceList($corpRes, 'corporate_name', 'w3-light-blue');
+$upCorpTab .= getInvoiceList($corpRes, 'corporate_name', 'w3-light-blue', $summary);
 $upCorpTab .= "</table>";
 
 
 $sql = "SELECT * FROM `invoice`, `bank` WHERE `inv_ctype` = 2 AND invoice.inv_ctype_id = bank.bank_id AND inv_paid_on is NULL";
 $bankRes = $invObj->getSqlResult($sql);
 $upBankTab = $tabheads;
-$upBankTab .= getInvoiceList($bankRes, 'bank_code', 'w3-lime');
+$upBankTab .= getInvoiceList($bankRes, 'bank_code', 'w3-lime', $summary);
 $upBankTab .= "</table>";
 
-function getInvoiceList($arr, $code, $c){
+function getInvoiceList($arr, $code, $c, &$summary){
 	$upTab ="";
 	$deleteUA ="";
 	$sumAmount = 0; $sumArrear = 0;
+	if($code == 'corporate_name') $sumcode = 'corp';
+	else if($code == 'bank_code') $sumcode = 'bank';
 	for($i=0;$i<count($arr);$i++){
+		$month = date("Y-m",strtotime($arr[$i]['inv_from_date']));
+		if(isset($summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['amount'])){
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['amount'] += $arr[$i]['inv_amount'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['arrear'] += $arr[$i]['inv_arrear'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['amount'] = $arr[$i]['inv_amount'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['arrear'] = $arr[$i]['inv_arrear'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['ref'] = $arr[$i]['inv_ref'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['id'] = $arr[$i]['inv_id'];
+		}
+
+		else{
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['amount'] = $arr[$i]['inv_amount'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['arrear'] = $arr[$i]['inv_arrear'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['amount'] = $arr[$i]['inv_amount'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['arrear'] = $arr[$i]['inv_arrear'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['ref'] = $arr[$i]['inv_ref'];
+			$summary[$month][$sumcode][$arr[$i][$code]]['invoiced']['invoice'][$arr[$i]['inv_id']]['id'] = $arr[$i]['inv_id'];
+		}
+
 		$sumAmount += $arr[$i]['inv_amount']; $sumArrear += $arr[$i]['inv_arrear'];
 		if($arr[$i]['inv_amount'] == $arr[$i]['inv_arrear']){
 			$deleteUA = "	<a
@@ -91,6 +112,8 @@ function getInvoiceList($arr, $code, $c){
 						</td>";
 	}
 	$upTab .= "<tr style='text-align:left'><th></th><th colspan='2' class='w3-wide'>Total : </th><th>$sumAmount</th><th>$sumArrear</th><th></th></tr>";
+
+	//echo "<pre>";print_r($summary);echo "</pre>";
 	return $upTab;
 }
 ?>

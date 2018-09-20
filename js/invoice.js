@@ -318,3 +318,22 @@ function validatePay(id){
   }
   return true;
 }
+
+function accountsView(rowspan, el){
+  var trclass = el.id;
+  var trtoggle = document.getElementsByClassName(trclass);
+  var status = trtoggle[0].style.display;
+  var corpnametd = document.getElementById('td-'+trclass);
+
+  if(status == ''){
+    corpnametd.rowSpan = "1";
+    status = 'none';
+  }
+  else{
+    corpnametd.rowSpan = rowspan;
+    status = '';
+  }
+  for(i=0;i<trtoggle.length;i++){
+      trtoggle[i].style.display = status;
+  }
+}

@@ -72,4 +72,15 @@ function updateConsucutiveMonths($con, $mdObj){
 		}
 	}
 }
+
+function getBankName($con, $id){
+  $bank = new DbTables($con, 'bank');
+  $values = $bank->valueLookUp(array('bank_code'), $id, 'bank_id');
+  return $values[0]['bank_code'];
+}
+function getCorpName($con, $id){
+  $bank = new DbTables($con, 'corporate');
+  $values = $bank->valueLookUp(array('corporate_name'), $id, 'corporate_id');
+  return $values[0]['corporate_name'];
+}
 ?>

@@ -8,19 +8,31 @@ function formatInvoiceTab($dr, $ctype){
 			$fd = $dr[$i]['flight_date'];
 			$fm = date("Y-m",strtotime($fd));
 			if($dr[$i]['corporate_id'] != NULL){
-				if(isset($uninsum[$fm]['corp'][$dr[$i]['corporate_name']]))
+				if(isset($uninsum[$fm]['corp'][$dr[$i]['corporate_name']])){
 					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['count']++;
+					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['uninvoiced']['amount']+=$dr[$i]['amount'];
+					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['uninvoiced']['pax']+=$dr[$i]['no_of_passengers'];
+				}
+
 				else {
 					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['id'] = $dr[$i]['corporate_id'];
 					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['count'] = 1;
+					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['uninvoiced']['amount']=$dr[$i]['amount'];
+					$uninsum[$fm]['corp'][$dr[$i]['corporate_name']]['uninvoiced']['pax']=$dr[$i]['no_of_passengers'];
 				}
 			}
 			if($dr[$i]['bank_id'] != NULL){
-				if(isset($uninsum[$fm]['bank'][$dr[$i]['bank_code']]))
+				if(isset($uninsum[$fm]['bank'][$dr[$i]['bank_code']])){
 					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['count']++;
+					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['uninvoiced']['amount']+=$dr[$i]['amount'];
+					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['uninvoiced']['pax']+=$dr[$i]['no_of_passengers'];
+				}
+
 				else {
 					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['id'] = $dr[$i]['bank_id'];
 					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['count'] = 1;
+					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['uninvoiced']['amount']=$dr[$i]['amount'];
+					$uninsum[$fm]['bank'][$dr[$i]['bank_code']]['uninvoiced']['pax']=$dr[$i]['no_of_passengers'];
 				}
 			}
 		}
@@ -92,7 +104,7 @@ function formatInvoiceTab($dr, $ctype){
 		}
 		$outputtab['corptab'] = $corptab;
 		$outputtab['banktab'] = $banktab;
+		$outputtab['uninsum'] = $uninsum;
 		return $outputtab;
-	//}
 }
 ?>

@@ -54,6 +54,7 @@
 
 	require_once("invoicepanel.php");
 	$invtab = formatInvoiceTab($dr, $ctype); //Invoice Table
+	$summary = $invtab['uninsum'];
 	###########################MAIN PRESENTER TABLES FORMATTER###########################
 ?>
 	<div class="w3-gray w3-row" style="min-height:100vh">
@@ -63,10 +64,12 @@
 	$menuitems[0]['include']  = TEMPLATEDIR."/queryPaidInvoice.php";
 	$menuitems[0]['details']  = "<a href='javascript:void(0)' onclick=\"showQuerySelector('down')\" class='nodec'>Query Paid Invoice</a>";
 
-	$menuitems[1]['classes']  = 'w3-center w3-small darkestmenu';
+	$menuitems[1]['classes']  = 'w3-center w3-small darkermenu';
 	$menuitems[1]['include']  = TEMPLATEDIR."/partialInvoiceForm.php";
 	$menuitems[1]['details']  = "<a href='javascript:void(0)' onclick=\"showReportSelector('down')\" class='nodec'>Partial Invoice</a>";
 
+	$menuitems[2]['classes']  = 'w3-center w3-small darkestmenu';
+	$menuitems[2]['details']  = "<a href='javascript:void(0)' onclick=\"document.getElementById('accountssummary').style.display='block'\" class='nodec'>Accounts Summary</a>";
 	$pagetitle = "Invoice and Payment Management";
 
 	include(TEMPLATEDIR."/topmenu.php");
@@ -104,12 +107,23 @@
 			</div>
 			</div>
 		</div>
+		<div id="accountssummary" class="w3-modal">
+			<div class="w3-modal-content"  style="width:98vw;">
+				<div class="w3-container">
+					<h5 class="w3-margin-left w3-display-topleft">Accounts Summary till <?php echo date("d M, Y");?></h5>
+					<span onclick="document.getElementById('accountssummary').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+					<div id='requestcontainer' class="w3-responsive">
+						<?php include("accountsummary.php")?>
+					</div>
+				</div>
+			</div>
+		</div>
 	<!--########################### DIV FOR MAIN PRESENTER TABLES ENDS ###########################-->
 </div>
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/invoice.js?version=0.6"></script>
+<script src="<?php echo JSDIR;?>/invoice.js?version=0.0.2"></script>
 <script>
 		var jscorporates = [<?php echo $corpjvar;?>];
 		var jsbanks = [<?php echo $bankjvar;?>];
