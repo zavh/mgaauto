@@ -83,4 +83,22 @@ function getCorpName($con, $id){
   $values = $bank->valueLookUp(array('corporate_name'), $id, 'corporate_id');
   return $values[0]['corporate_name'];
 }
+function getBanks($con){
+	$sql = "SELECT * FROM bank";
+	$result = $con->query($sql);
+	$banks = array();
+	while($row = $result->fetch_assoc()){
+		$banks[$row['bank_id']] = $row['bank_code'];
+	}
+	return $banks;
+}
+function getCorps($con){
+	$sql = "SELECT * FROM `corporate`";
+	$result = $con->query($sql);
+	$corps = array();
+	while($row = $result->fetch_assoc()){
+		$corps[$row['corporate_id']] = $row['corporate_name'];
+	}
+	return $corps;
+}
 ?>

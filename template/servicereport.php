@@ -29,16 +29,16 @@ else {
 
 <?php
 function getServiceReport($m, $p, $con){
-//  echo "<pre>";print_r($m);echo "</pre>";
   $heads = array('Account','Pax', 'Billded Amount', 'Received Amount',
                           'Due Amount Current','Arrear', 'Arrear Paid', 'Arrear Paid By',
                           'Arrear Carried Over','Total Due','Remarks');
   $accounts = array("1"=>"Spot","2"=>"Bank","3"=>"Corporate");
   $c = "<table class='summaryTable w3-hoverable'>";
   $c .= "<tr><th>".implode("</th><th>",$heads)."</th></tr>";
-  $arrearFlag = false;
-  $monthFlag = false;
+
   for($i=1;$i<4;$i++){
+    $arrearFlag = false;
+    $monthFlag = false;
     $arrearPaymentExpander = "";
     $monthPaymentExpander = "";
     if($i==1) $class='w3-amber';
@@ -77,11 +77,12 @@ function getServiceReport($m, $p, $con){
                <td>".$m->md['stream'][$i]['fullarrear']."</td>
                <td></td>
           </tr>";
-    if($arrearFlag)
-      $c .= getArrearPaidOrgs($p['arrearPayment'][$i]['account'], $i, $aLink, $con);
-
-    if($monthFlag)
-      $c .= getThismonthPaidOrgs($p['thisMonthPayment'][$i]['account'], $i, $pLink, $con);
+    if($arrearFlag){
+        $c .= getArrearPaidOrgs($p['arrearPayment'][$i]['account'], $i, $aLink, $con);
+    }
+    if($monthFlag){
+        $c .= getThismonthPaidOrgs($p['thisMonthPayment'][$i]['account'], $i, $pLink, $con);
+    }
   }
   return $c;
 }
@@ -92,6 +93,7 @@ function getExpander($id){
   return $exp;
 }
 function getArrearPaidOrgs($orgs, $mop, $class, $con){
+
   $cosmetics = '';
   if($mop == 2) {
     $orgType = 'Bank Name';

@@ -164,9 +164,6 @@ function ajaxFunction(instruction, execute_id, divid){
 		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
 				if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
-                    if(instruction=="changelevel"){
-                        alert(ajaxRequest.responseText);
-                    }
 				    var ajaxDisplay = document.getElementById(divid);
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
@@ -176,8 +173,14 @@ function ajaxFunction(instruction, execute_id, divid){
 			var id = divid.split("-").pop();
 			var queryString = "?newassgn="+encodeURIComponent(execute_id);
 			queryString += "&id="+id;
-			//alert(queryString);
+			alert(queryString);
 			ajaxRequest.open("GET", "../../utils/update.php" + queryString, true);
+			ajaxRequest.send();
+		}
+		if(instruction == "showEntries"){
+			//alert(execute_id);
+			var queryString = "?mode="+execute_id;
+			ajaxRequest.open("GET", "entries.php" + queryString, true);
 			ajaxRequest.send();
 		}
 }
@@ -383,5 +386,8 @@ function showPaymentDetails(el){
   for(i=0;i<rowcount;i++){
     rows[i].style.display=showFlag;
   }
-
+}
+function entryMode(el){
+	var mode = el.value;
+	ajaxFunction('showEntries', mode, 'entryrecordshow');
 }

@@ -97,15 +97,15 @@
 		<!-- Top menu ends-->
 
 		<!-- Main Body starts-->
-		<div class='w3-row w3-left' style='margin:2px 0px 2px 8px'>
-			<form method="POST" action="" class="w3-center">
-				<label>Report of : </label>
-				<input type="date" name="reportdate" id="reportdate" required value="<?php echo $reportdate;?>">
-				&nbsp;<input type="submit" value="go">
-			</form>
-		</div>
 		<div class="w3-row w3-center" style='margin-left:8px;margin-right:8px'>
 			<div class=" w3-third " id="report">
+				<div class='w3-row' style='margin:2px 0px 2px 0px'>
+					<form method="POST" action="" class="w3-center">
+						<label>Report of : </label>
+						<input type="date" name="reportdate" id="reportdate" required value="<?php echo $reportdate;?>">
+						&nbsp;<input type="submit" value="go">
+					</form>
+				</div>
 				<div class="w3-responsive" id="dailyreportshow" style="width:100%;">
 					<?php include("report_daily.php");
 					?>
@@ -121,8 +121,15 @@
 			</div>
 			<div class=" w3-twothird " id="record">
 				<div class=" w3-card" style='margin:2px 4px 8px 4px'>
-					<div class="w3-center w3-responsive entryreport" id="dailyrecordshow" style='background:#333'>
-						<?php echo $entrtable; ?>
+					<div class="w3-center w3-responsive entryreport" style='background:#333'>
+						<span class='w3-text-white'>
+							Monthly <input type='radio' name='mode' value='monthly' onclick='entryMode(this);'>
+							Daily <input type='radio' name='mode' value='daily' onclick='entryMode(this);' checked>
+						</span>
+						<?php //echo $entrtable; ?>
+						<div id="entryrecordshow">
+							<?php include("entries.php"); ?>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -155,7 +162,7 @@
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.3"></script>
+<script src="<?php echo JSDIR;?>/dailyreport.js?version=0.6"></script>
 <script>
 	var jscorporates = [<?php echo $corpjvar;?>];
 	var jsbanks = [<?php echo $bankjvar;?>];
