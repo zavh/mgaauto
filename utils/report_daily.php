@@ -1,7 +1,7 @@
 <?php
 $reportdate = date("Y-m-d");
 if(isset($_POST['reportdate'])){
-	
+
 	$reportdate = $_POST['reportdate'];
 }
 
@@ -55,7 +55,7 @@ $corps = getCorps($con);
 $result = $con->query($sql);
 $entries = array();
 if($result->num_rows>0){
-	
+
 	while($row=$result->fetch_assoc()){
 		if($row['client_type'] == '1')
 			$spottable = formatSpot($spottable, $row);
@@ -64,7 +64,7 @@ if($result->num_rows>0){
 		if($row['client_type'] == '3')
 			$cardtable = formatCard($cardtable, $row, $banks);
 		$key = $row['flight_date']." ".$row['flight_time']."-".$row['id'];
-		$entries[$key] = $row; 
+		$entries[$key] = $row;
 	}
 	$entrtable = formatEntry($entrtable, $banks, $corps, $entries, $con);
 }
@@ -99,7 +99,7 @@ function formatSpot($spottable, $row){
 	$spottable .= "<td>".$row['amount']."</td>";
 	$spottable .= "<td>".$row['amount']."</td>";
 	$spottable .= "</tr>";
-	
+
 	return $spottable;
 }
 
@@ -112,7 +112,7 @@ function formatCard($cardtable, $row, $banks){
 	$cardtable .= "<td></td>";
 	$cardtable .= "<td>".$row['amount']."</td>";
 	$cardtable .= "</tr>";
-	
+
 	return $cardtable;
 }
 
@@ -125,7 +125,7 @@ function formatCorp($corptable, $row, $corps){
 	$corptable .= "<td></td>";
 	$corptable .= "<td>".$row['amount']."</td>";
 	$corptable .= "</tr>";
-	
+
 	return $corptable;
 }
 
@@ -145,7 +145,7 @@ function findBalFor($reportdate, $con, $type){
 	$data['bf']['pax'] = $fullmonth['pax'] - $today['pax'];
 	$data['grtotal'] = $fullmonth;
 	$data['total'] = $today;
-	
+
 	return $data;
 }
 function getBanks($con){
@@ -182,14 +182,14 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 		$i++;
 		if($entry['arrival_departure']==0) $dir = "Arrival";
 		else $dir = "Departure";
-		
+
 		if($entry['requirements'] != NULL) {
 			$req = getRequirements($entry['requirements'], $con);
 			$spreq = '<span class="w3-badge w3-tooltip w3-round">'.$req['num'].'<span style="position:absolute;left:-10px;'.$tooltippos.';width:150px;text-align:left;z-index:100"
 						class="w3-text w3-tag w3-round">'.$req['des'].'</span></span>';
 		}
 		else $spreq = "None";
-		
+
 		if($entry['mode_of_payment']==1) {
 			$mop = "Cash";
 			$spotrec++;
@@ -202,7 +202,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$corprec++;
 			$mop = "Due";
 		}
-		
+
 		if($entry['client_type'] == "1"){
 			$type = "Spot";
 			$bank = "-";
@@ -217,8 +217,8 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$type = "Card";
 			$bank = $banks[$entry['bank_id']];
 			$corp = "-";
-		}		
-		
+		}
+
 		$entrtable .= "<tr>
 						<td>".$entry['name']."</td>
 						<td>".$entry['contact']."</td>
@@ -240,7 +240,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 		$totam += $entry['amount'];
 		$count++;
 	}
-	$entrtable .= "<tr class='w3-gray'>
+	$entrtable .= "<tr class='w3-white'>
 					<th colspan='4'>Total Records: $count, Spot Records: $spotrec, Card Records: $cardrec, Corporate Records: $corprec</th>
 					<th>$totpax</th>
 					<td colspan=2></td>
@@ -275,10 +275,10 @@ function getRequirements($id, $con){
 		if($row['other']!=NULL){
 			$req['num']++;
 			$req['des'] .= "<li>".$row['other']."</li>";
-		}		
+		}
 		$req['des'] .= "</ul>";
 	}
-	
+
 	return $req;
 }
 ?>

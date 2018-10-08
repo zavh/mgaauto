@@ -2,328 +2,208 @@
 	include($_SERVER['DOCUMENT_ROOT']."/mga/config/serverconfig.php");
 	include(TEMPLATEDIR."/header.php");
 	include(TEMPLATEDIR."/mainmenu.php");
-?>	
-
-	<!-- Top menu starts-->
-	<div class="w3-row">
-	  <div class="w3-col w3-center" style="width:16px">
-		<a href="javascript:void(0)" class="nodec" onclick="w3_open()">&#9776;</a>
-	  </div>
-	  <div class="w3-rest">
-	  </div>
-	</div>
-		<!-- Top menu ends-->
+?>
+<div class="w3-gray w3-row" style="min-height:100vh">
+	<!-- Top Menu Starts-->
+	<?php
+		$pagetitle = "User Management";
+		include(TEMPLATEDIR."/topmenu.php");
+	?>
+	<!-- Top Menu Ends-->
 	<div class="w3-row w3-center w3-margin">
 		<div class="w3-col m12 l4 w3-tiny">
 		<!-- New User Creation Form Starts-->
-			<form class="w3-margin w3-card w3-round-xxlarge" style="overflow:hidden" method="POST" action="userpost.php">
+		<?php if($_SESSION['level']>9) {?>
+			<form
+				class="w3-margin w3-card w3-round-xxlarge w3-white"
+				style="overflow:hidden"
+				method="POST"
+				action="userpost.php"
+				onsubmit="return userAjaxFunction('newUserPost', '', '')">
 			<div class="w3-container w3-sand w3-center">
 			  <p>Create New User</p>
 			</div>
-			  <!-- <label>Username</label></p> -->
-			  <input class="w3-input w3-padding-large" type="email" name="uid" placeholder="Insert Username" required>
-			  <p>
-				<!-- <label>Password</label> -->
-				<input 
-					class="w3-input w3-padding-large" 
-					type="password" 
-					name="pwd" 
-					placeholder="Insert Password" required
-					pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-					onfocus='showMsgDiv()'
-					onblur = 'hideMsgDiv()'
-					onkeyup = 'validatePassCriteria(this)'
-					>
-			  </p>
-			  <p>
-				<!-- <label>Password</label> -->
-				<input class="w3-input w3-padding-large" type="number" name="level" placeholder="Insert User Level" min='1' max='10' required>
-			  </p>		  
-			  <p class="w3-row w3-center w3-tiny"><button type="submit" >GO</button></p>
+			  <input type='hidden' id='uid-flag' value=0>
+				<div class="w3-row form-group" id='uiddiv'>
+					<div class='w3-col' style='width: calc(100% - 34px);'>
+						<label class="form-label" for="uid">Insert Username</label>
+					  <input
+							class="form-input"
+							type="email"
+							name="uid"
+							id="uid"
+							onkeyup="validateEmail(this)"
+							onfocus='inputFocus(this)'
+							onblur ='inputBlur(this)'
+							style='outline: none;'
+							required>
+					</div>
+					<div class='w3-col' style='width:34px;display:none' id='uid-success'>
+							<span class='w3-text-green w3-tiny w3-center dot-large' style='vertical-align:middle;'>&#10004;</span>
+					</div>
+				</div>
+			  <div class="w3-row form-group">
+					<div class='w3-col' style='width: calc(100% - 34px);'>
+						<label class="form-label" for="newUserPass">Insert Password</label>
+						<input
+							class="form-input"
+							type="password"
+							name="pwd"
+							id="pwd"
+							onkeyup = 'validatePassCriteria(this)'
+							pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+							onfocus='passCriteriaVars("new");showMsgDiv("passwordDetector-1");inputFocus(this)'
+							onblur = 'hideMsgDiv("passwordDetector-1");inputBlur(this)'
+							required
+							>
+					</div>
+					<div class='w3-col' style='width:34px;display:none' id='pwd-success'>
+							<span class='w3-text-green w3-tiny w3-center dot-large' style='vertical-align:middle;'>&#10004;</span>
+					</div>
+				</div>
+				<div class='w3-row' style='display:none;top:0' id='passwordDetector-1'>
+					<div id='new-capital' class='w3-quarter invalid'>1 Uppercase</div>
+					<div id='new-letter' class='w3-quarter invalid'>1 Lowercase</div>
+					<div id='new-number' class='w3-quarter invalid'>1 Number</div>
+					<div id='new-length' class='w3-quarter invalid'>8 characters</div>
+				</div>
+
+				<input type='hidden' id='newUserPassRetype-flag' value=0>
+				<div class="w3-row form-group" id='newPassRetypeDiv'>
+					<div class='w3-col' style='width: calc(100% - 34px);'>
+						<label class="form-label" for="newUserPassRetype">Re-type Password</label>
+						<input
+							class="form-input"
+							type="password"
+							id="newUserPassRetype"
+							onkeyup = 'passChangeValidate(this, "pwd","newUserPassRetype")'
+							onfocus='inputFocus(this)'
+							onblur ='inputBlur(this)'
+							required>
+					</div>
+					<div class='w3-col' style='width:34px;display:none' id='newUserPassRetype-success'>
+							<span class='w3-text-green w3-tiny w3-center dot-large' style='vertical-align:middle;'>&#10004;</span>
+					</div>
+			  </div>
+			  <div class="w3-row form-group">
+					<div class='w3-col' style='width: calc(100% - 34px);'>
+						<label class="form-label" for="level">Insert User Level</label>
+						<input
+							class="form-input"
+							type="number"
+							id="level"
+							name="level"
+							min='1' max='10'
+							onkeyup = 'levelValidate(this)'
+							onfocus='inputFocus(this)'
+							onblur ='inputBlur(this)'
+							required>
+					</div>
+					<div class='w3-col' style='width:34px;display:none' id='level-success'>
+							<span class='w3-text-green w3-tiny w3-center dot-large' style='vertical-align:middle;'>&#10004;</span>
+					</div>
+				</div>
+			  <p class="w3-row w3-center w3-tiny"><button type="submit">GO</button></p>
 			  <input type='hidden' name='command' value='newuser'>
 			</form>
+		<?php }?>
 		<!-- New User Creation Form Ends-->
 		<!-- Change Password Form Starts-->
-			<form class="w3-margin w3-card w3-round-xxlarge" style="overflow:hidden" method="POST" action="userpost.php" id='changePassForm' onsubmit="return passChangeValidate()">
+			<form
+				class="w3-margin w3-card w3-round-xxlarge w3-white"
+				style="overflow:hidden"
+				id='changePassForm'
+				onsubmit="return userAjaxFunction('postPassChange', '', '')">
 			<div class="w3-container w3-sand w3-center">
 			  <p>Change Password</p>
 			</div>
 			  <!-- <label>Username</label></p> -->
-			  <input class="w3-input w3-padding-large" type="password" name="existing_password" placeholder="Insert Current Password" required>
-			  <p>
+				<div class="w3-row form-group">
+						<label class="form-label" for="existing_password">Insert Current Password</label>
+						<input
+							class="form-input"
+							type="password"
+							name="existing_password"
+							id="existing_password"
+							onfocus='inputFocus(this)'
+							onblur ='inputBlur(this)'
+							required
+							>
+				</div>
+				<div class="w3-row form-group">
+					<div class='w3-col' style='width: calc(100% - 34px);'>
+						<label class="form-label" for="newpassword">Insert Password</label>
+						<input
+							class="form-input"
+							type="password"
+							name="newpassword"
+							id="newpassword"
+							onkeyup = 'validatePassCriteria(this)'
+							pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+							onfocus='passCriteriaVars("change");showMsgDiv("passwordDetector-2");inputFocus(this)'
+							onblur = 'hideMsgDiv("passwordDetector-2");inputBlur(this)'
+							required
+							>
+					</div>
+					<div class='w3-col' style='width:34px;display:none' id='newpassword-success'>
+							<span class='w3-text-green w3-tiny w3-center dot-large' style='vertical-align:middle;'>&#10004;</span>
+					</div>
+				</div>
+				<div class='w3-row' style='display:none;top:0' id='passwordDetector-2'>
+					<div id='change-capital' class='w3-quarter invalid'>1 Uppercase</div>
+					<div id='change-letter' class='w3-quarter invalid'>1 Lowercase</div>
+					<div id='change-number' class='w3-quarter invalid'>1 Number</div>
+					<div id='change-length' class='w3-quarter invalid'>8 characters</div>
+				</div>
 				<!-- <label>Password</label> -->
-				<input 
-					class="w3-input w3-padding-large" 
-					type="password" 
-					name="newpassword" 
-					placeholder="Insert New Password" required 
-					id='newpassword' 
-					pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-					onfocus='showMsgDiv()'
-					onblur = 'hideMsgDiv()'
-					onkeyup = 'validatePassCriteria(this)'
-					>
-			  </p>
-			  <p>
-				<!-- <label>Password</label> -->
-				<input class="w3-input w3-padding-large" type="password" name="verifynew" placeholder="Re-enter New Password" required id='verifynew'>
-			  </p>		  
+				<input type='hidden' id='verifynew-flag' value=0>
+				<div class="w3-row form-group" id='vndiv'>
+					<div class='w3-col' style='width: calc(100% - 34px);'>
+						<label class="form-label" for="verifynew">Re-enter New Password</label>
+						<input
+							class="form-input"
+							type="password"
+							name="newpassword"
+							id="verifynew"
+							onkeyup = 'passChangeValidate(this, "newpassword","verifynew")'
+							onfocus='passCriteriaVars("change");inputFocus(this)'
+							onblur = 'inputBlur(this)'
+							required
+							>
+					</div>
+					<div class='w3-col' style='width:34px;display:none' id='verifynew-success'>
+							<span class='w3-text-green w3-tiny w3-center dot-large' style='vertical-align:middle;'>&#10004;</span>
+					</div>
+				</div>
 			  <p class="w3-row w3-center w3-tiny"><button type='submit'>GO</button></p>
-			  <input type='hidden' name='command' value='changepasswd'>
 			</form>
-			<div id="message" class="w3-margin w3-card w3-round-xxlarge" style="overflow:hidden;display:none;width:50%;text-align:left" >
-			<div class="w3-container w3-sand w3-center">
-			  <p>Password must contain the following:</p>
-			</div>
-				<p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-				<p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-				<p id="number" class="invalid">A <b>number</b></p>
-				<p id="length" class="invalid">Minimum <b>8 characters</b></p>
-			</div>
 			<!-- Change Password Form Ends-->
 		</div>
-		<div class="w3-col m12 l4 w3-small">
+		<?php if($_SESSION['level']>9){?>
+		<div class="w3-col m12 l4 w3-tiny">
 			<div class="w3-margin w3-card w3-round-xxlarge" style="overflow:hidden">
 					<div class="w3-container w3-pale-red w3-center">
 					  <p>Manage Users</p>
 					</div>
 				<div id='userlist'>
 					<?php include("userlist.php")?>
-				</div>					
+				</div>
 			</div>
-		</div>		
+		</div>
+	<?php }?>
 	</div>
 	<input type='hidden' id='errmsg' value='0'>
 	<div id="snackbar"></div>
-			<?php 
-				if(isset($_GET['response'])){
-						switch ($_GET['response']) {
-							case '100':
-								$errmgs = "User \"".$_GET['user']."\" created successfully";
-								echo "<input type='hidden' id='errmsg' value='$errmgs|100'>";
-								break;
-							case '101':
-								$errmgs = "Password for User \"".$_GET['user']."\" changed successfully";
-								echo "<input type='hidden' id='errmsg' value='$errmgs|101'>";
-								break;
-							case '102':
-								$errmgs = "User removed successfully";
-								echo "<input type='hidden' id='errmsg' value='$errmgs|101'>";
-								break;								
-							case '1':
-								$errmgs = "User creation failed for User: ".$_GET['user'];
-								echo "<input type='hidden' id='errmsg' value='$errmgs|1'>";
-								break;
-							case '2':
-								$errmgs = "Password did not match for User: ".$_GET['user'];
-								echo "<input type='hidden' id='errmsg' value='$errmgs|2'>";
-								break;
-							case '3':
-								$errmgs = "Your User Level is not allowed perform this operation";
-								echo "<input type='hidden' id='errmsg' value='$errmgs|2'>";
-								break;								
-							default:
-								echo $_GET['response'];
-						}
-						
-				}
-			?>	
+</div>
 <?php
 	include(TEMPLATEDIR."/footer.php");
 ?>
-<script>
-function passChangeValidate(){
-	if(!reEnterVerify()) return false;
-}
-function reEnterVerify(){
-	var newpass = document.getElementById("newpassword").value;
-	var verpass = document.getElementById("verifynew").value;
-	
-	if(newpass == verpass)
-		document.getElementById("changePassForm").submit();
-	else {
-		alert("New password and Re-entered password didn't match");
-		return false;
-	}
-}
-
-
-var letter = document.getElementById("letter");
-var capital = document.getElementById("capital");
-var number = document.getElementById("number");
-var length = document.getElementById("length");
-
-function showMsgDiv(){
-	document.getElementById("message").style.display = "block";
-}
-function hideMsgDiv(){
-	document.getElementById("message").style.display = "none";
-}
-
-function validatePassCriteria(passfield) {
-  // Validate lowercase letters
-  var lowerCaseLetters = /[a-z]/g;
-  if(passfield.value.match(lowerCaseLetters)) {  
-    letter.classList.remove("invalid");
-    letter.classList.add("valid");
-  } else {
-    letter.classList.remove("valid");
-    letter.classList.add("invalid");
-  }
-  
-  // Validate capital letters
-  var upperCaseLetters = /[A-Z]/g;
-  if(passfield.value.match(upperCaseLetters)) {  
-    capital.classList.remove("invalid");
-    capital.classList.add("valid");
-  } else {
-    capital.classList.remove("valid");
-    capital.classList.add("invalid");
-  }
-
-  // Validate numbers
-  var numbers = /[0-9]/g;
-  if(passfield.value.match(numbers)) {  
-    number.classList.remove("invalid");
-    number.classList.add("valid");
-  } else {
-    number.classList.remove("valid");
-    number.classList.add("invalid");
-  }
-  
-  // Validate length
-  if(passfield.value.length >= 8) {
-    length.classList.remove("invalid");
-    length.classList.add("valid");
-  } else {
-    length.classList.remove("valid");
-    length.classList.add("invalid");
-  }
-}
-function deleteUser(table_id){
-	var userActionForm = document.createElement("form");
-	userActionForm.target = "";
-	userActionForm.method = "POST";
-	userActionForm.action = "userpost.php";
-
-	var commandInput = document.createElement("input");
-    commandInput.type = "hidden";
-    commandInput.name = "command";
-    commandInput.value = "deleteuser";
-    userActionForm.appendChild(commandInput);
-	document.body.appendChild(userActionForm);
-
-	var idInput = document.createElement("input");
-    idInput.type = "hidden";
-    idInput.name = "table_id";
-    idInput.value = table_id;
-    userActionForm.appendChild(idInput);
-	document.body.appendChild(userActionForm);	
-    
-	userActionForm.submit();
-}
-
-function changeLevel(input, originput, table_id, e){
-	var x = e.which;
-	if(x == 13){
-		origval = parseInt(document.getElementById(originput).value);
-		newval = parseInt(document.getElementById(input).value);
-		if(origval == newval) {
-			alert('No change in User Level!');
-			return;
-		}
-		else if(newval<1 || newval>10 || !Number.isInteger(newval)){
-			alert('User Level should be between 1 and 20');
-			return;
-		}
-		else {
-			userAjaxFunction('changelevel', newval+"|"+table_id+"|"+input, 'userlist');
-		}
-	}
-}
-
-function userAjaxFunction(instruction, execute_id, divid){
-	var ajaxRequest;  // The variable that makes Ajax possible!
-		try{
-				// Opera 8.0+, Firefox, Safari
-				ajaxRequest = new XMLHttpRequest();
-		} catch (e){
-				// Internet Explorer Browsers
-				try{
-						ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-				} catch (e) {
-						try{
-								ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-						} catch (e){
-								// Something went wrong
-								alert("Your browser broke!");
-								return false;
-						}
-				}
-		}
-		// Create a function that will receive data sent from the server
-		ajaxRequest.onreadystatechange = function(){
-				if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
-                    if(instruction=="changelevel"){
-						document.getElementById("errmsg").value = ajaxRequest.responseText;
-						msgInASnackbar();
-						var status = ajaxRequest.responseText.split("|");
-						if(parseInt(status[1])<100){
-							document.getElementById(config[2]).value = document.getElementById("orig-"+config[2]).value;
-							return;
-						}
-						else userAjaxFunction('refreshList', '', 'userlist');
-                    }
-					if(instruction=="resetpass"){
-						document.getElementById("errmsg").value = ajaxRequest.responseText;
-						msgInASnackbar();
-						return;
-					}
-				    var ajaxDisplay = document.getElementById(divid);
-				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
-				}
-	   } 
-        if(instruction == "changelevel"){
-			var config = execute_id.split("|");
-			execute_id = config[0]+"|"+config[1];
-            ajaxRequest.open("POST", "userpost.php", true);
-            ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            ajaxRequest.send("command=changelevel&config="+execute_id);
-        }
-        if(instruction == "resetpass"){
-            ajaxRequest.open("POST", "userpost.php", true);
-            ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            ajaxRequest.send("command=resetpass&table_id="+execute_id);
-        }		
-		if(instruction == "refreshList"){
-			ajaxRequest.open("POST", "userlist.php", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			ajaxRequest.send();
-		}		
-}
-
-</script>
-<script src="<?php echo JSDIR;?>/snackbar.js"></script>
-<style>
+<script src="<?php echo JSDIR;?>/snackbar.js?version=1.0"></script>
+<script src="<?php echo JSDIR;?>/users.js?version=1.6"></script>
 <style>
 /* Style all input fields */
 
 /* The message box is shown when the user clicks on the password field */
-#message {
-    display:none;
-    background: #f1f1f1;
-    color: #000;
-    position: relative;
-    padding: 0px;
-    margin-top: 0px;
-}
-
-#message p {
-    //padding: 10px 10px;
-    font-size: 10px;
-	margin-left:50px;
-}
-
 /* Add a green text color and a checkmark when the requirements are right */
 .valid {
     color: green;
@@ -345,5 +225,4 @@ function userAjaxFunction(instruction, execute_id, divid){
     left: -10px;
     content: "✖";
 }
-</style>
 </style>

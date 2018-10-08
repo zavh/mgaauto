@@ -2,19 +2,19 @@
 class DbTables{
 	public $con;
 	public $table;
-	
+
 	function __construct($con, $table) {
         $this->con = $con;
-		$this->table = $table;
+				$this->table = $table;
     }
-	
+
 	public function idToField($id, $field){
 		$sql = "SELECT $id, $field from ".$this->table;
 		$dbresult = $this->getDbResult($sql);
-		
+
 		$result = array();
 		$i=0;
-		
+
 		if($dbresult->num_rows > 0){
 			while($row = $dbresult->fetch_assoc()){
 				$result[$id][$i] 		= $row[$id];
@@ -24,7 +24,7 @@ class DbTables{
 		}
 		return $result;
 	}
-	
+
 	public function idLookUp($field, $value, $id){
 		$sql = "SELECT `$id` FROM `".$this->table."` WHERE `$field` = '$value'";
 		$dbresult = $this->getDbResult($sql);
@@ -35,7 +35,7 @@ class DbTables{
 		}
 		return $resultid;
 	}
-	
+
 	public function valueLookUp($field, $value, $id){
 		$columns = "`".implode("`, `",array_values($field))."`";
 		$sql = "SELECT $columns FROM `".$this->table."` WHERE `$id` = '$value'";
@@ -48,9 +48,9 @@ class DbTables{
 			$resultval[$i++] = $row;
 		}
 		return $resultval;
-	}	
-	
-	public function insertRecord($insData){	
+	}
+
+	public function insertRecord($insData){
 		$columns = "`".implode("`, `",array_keys($insData))."`";
 		$escaped_values = array_map(array($this->con, 'real_escape_string'), array_values($insData));
 		$values = '';
@@ -66,7 +66,7 @@ class DbTables{
 		$this->con->query($sql);
 		return $this->con->insert_id;
 	}
-	
+
 	public function getSqlResult($sql){
 		//echo $sql;
 		$result = $this->getDbResult($sql);
@@ -98,29 +98,29 @@ class DbTables{
 		//echo $sql;
 		$result = $this->getDbResult($sql);
 		return $result;
-	}	
-	
+	}
+
 	public function setNull($field, $idfield, $idvalue){
 		$sql = "UPDATE `".$this->table."` SET `".$field."` = NULL WHERE `".$this->table."`.`".$idfield."` = ".$idvalue." ";
 		$result = $this->getDbResult($sql);
 		//echo $sql;
 		return $result;
 	}
-	
+
 	public function deleteRecord($id, $value){
 		$sql = "DELETE FROM ".$this->table." where `$id`='$value'";
 		$result = $this->getDbResult($sql);
 		return $result;
-	}	
+	}
 	private function getDbResult($sql){
 		$con = $this->con;
-		$dbresult = $con->query($sql);		
+		$dbresult = $con->query($sql);
 
 		return $dbresult;
 	}
-	
+
 	public function __destruct() {
 		;
-    }	
+    }
 }
 ?>

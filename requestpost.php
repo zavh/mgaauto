@@ -1,15 +1,16 @@
 <?php
 if(!isset($_SERVER['HTTP_REFERER']))
 	header ('Location:index.php');
-	
+
 
 	require_once("utils/db_read.php");
+	require_once("utils/commons.php");
 	require_once("classes/class_db_tables.php");
 
 	if(isset($_POST['editrequest'])){
 		$upDat = array();
 		$preObj = json_decode($_POST['predata']);
-		print_r($preObj);
+		//print_r($preObj);
 		if($_POST['pnumber'] != $preObj->no_of_passengers) $upDat['no_of_passengers'] = $_POST['pnumber'];
 		if($_POST['direction'] != $preObj->arrival_departure) $upDat['arrival_departure'] = $_POST['direction'];
 		if($_POST['dtravel'] != $preObj->flight_date) $upDat['flight_date'] = $_POST['dtravel'];
@@ -19,7 +20,7 @@ if(!isset($_SERVER['HTTP_REFERER']))
 		if($_POST['fnumber'] != $preObj->flight_no) $upDat['flight_no'] = $_POST['fnumber'];
 		if($_POST['provider'] != $preObj->assigned_to) $upDat['assigned_to'] = $_POST['provider'];
 		if($_POST['amount'] != $preObj->amount) $upDat['amount'] = $_POST['amount'];
-		
+
 		if($_POST['ctype'] != $preObj->client_type){
 			$upDat['client_type'] = $_POST['ctype'];
 			$upDat['mode_of_payment'] = $_POST['payment'];
@@ -34,7 +35,7 @@ if(!isset($_SERVER['HTTP_REFERER']))
 			}
 			if($_POST['ctype'] == 1){
 				$upDat['paid'] = 1;
-			}			
+			}
 		}
 
 		if($_POST['ctype'] == 2){
@@ -102,7 +103,7 @@ if(!isset($_SERVER['HTTP_REFERER']))
 				$reqObj->updateRecords($upReq, 'req_id', $preObj->requirements);
 			}
 		}
-		//If [previous] requirements exist but [update] does not have any 
+		//If [previous] requirements exist but [update] does not have any
 		else if($preObj->requirements != NULL && !isset($_POST['req'])){
 			//Delete existing request ID and remove from Request table
 			$upDat['requirements'] = 0;
@@ -112,26 +113,27 @@ if(!isset($_SERVER['HTTP_REFERER']))
 		if($upDat != NULL){
 			$upDatObj = new DbTables($con, 'requests');
 			$upDatObj->updateRecords($upDat, 'id', $preObj->id);
+			monthUpdated($con, $_POST['dtravel'], '1');
 		}
 		//print_r($upDat);
 	}
 	else {
 		$sql = init($_POST, $con);
 		if($sql>0) echo "Request inserted successfully";
-	
+
 	}
 	presentation($_POST);
 	header ('Location:'.$_SERVER['HTTP_REFERER']);
-	
+
 	function presentation($fd){
-		if($fd['direction'] == 0) 
+		if($fd['direction'] == 0)
 			$direction = "Arrival";
-		else if($fd['direction'] == 1) 
+		else if($fd['direction'] == 1)
 			$direction = "Departure";
 		if(isset($fd['req']))
 			$specialreq = "Yes";
 		else $specialreq = "None";
-			
+
 		$pt  = '<table class="w3-table-all">';//Presentation Table
 		$pt .= '<tr><th>Passanger/Group Leader</th><td>'.$fd['pname'].'</td></tr>';
 		$pt .= '<tr><th>Contact Number</th><td>'.$fd['tnumber'].'</td></tr>';
@@ -143,7 +145,7 @@ if(!isset($_SERVER['HTTP_REFERER']))
 		$pt .= '<tr><th>Amount</th><td>'.$fd['amount'].'</td></tr>';
 		$pt .= '<tr><td colspan=2>Request entered successfully. <a href="'.$_SERVER['HTTP_REFERER'].'">Back to Dashboard</a></td></tr>';
 		$pt .= '</table>';
-		
+
 		echo $pt;
 	}
 	function getBank($con, $bank_code){
@@ -195,16 +197,16 @@ if(!isset($_SERVER['HTTP_REFERER']))
 		if($client_type == 1)
 			$paid = 1;
 		$assigned_to = $fd['provider'];
-		$reqarr = array('name'=>$name, 
-						'contact'=>$contct, 
+		$reqarr = array('name'=>$name,
+						'contact'=>$contct,
 						'flight_no'=>$flight_no,
 						'flight_date'=>$flight_date,
 						'flight_time'=>$flight_time,
 						'no_of_passengers'=>$no_of_passangers,
 						'arrival_departure'=>$arrival_departure,
-						'requirements'=>$req_id, 
-						'amount'=>$amount, 
-						'mode_of_payment'=>$mode_of_payment, 
+						'requirements'=>$req_id,
+						'amount'=>$amount,
+						'mode_of_payment'=>$mode_of_payment,
 						'bank_id'=>$bank_id,
 						'card_no'=>$card_no,
 						'client_type'=>$client_type,
@@ -213,10 +215,11 @@ if(!isset($_SERVER['HTTP_REFERER']))
 						'paid'=>$paid
 						);
 		$reqObj = new DbTables($con, 'requests');
+		monthUpdated($con, $flight_date, '1');
 		return $reqObj->insertRecord($reqarr);
-		
+
 	}
-	
+
 	function get_requirement_sql($requirement, $con){
 		$req_sql = "INSERT INTO `requirements` (`req_id`";
 		$req_val = "VALUE (NULL";

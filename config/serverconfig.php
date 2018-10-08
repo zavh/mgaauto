@@ -1,7 +1,7 @@
 <?php
-define("WEBSERVER", "http://103.245.143.9");
-define("MAINHOST", "http://103.245.143.9/mga");
-define("MAINPATH","/var/www/html/mga");
+define("WEBSERVER", "http://localhost:8080");
+define("MAINHOST", "http://localhost:8080/mga");
+define("MAINPATH","/opt/lampp/htdocs/mga");
 define("TIMEZONE","Asia/Dhaka");
 define("CLASSDIR",MAINPATH."/classes");
 define("UTILSDIR",MAINPATH."/utils");
@@ -14,4 +14,6 @@ define("LETTERHEADHEAD","100px");
 define("INVOICEREF", "# Bill/ MGA/");
 define("INVOICESTORE", MAINPATH."/site/invoicing/invoices");
 define("PERFORMANCEREPORTDIR", MAINPATH."/site/performance/reports");
+define("EMPTYMONTHTEMPLATE", TEMPLATEDIR."/monthreport-template.json");
+define("IMAGEFOLDER",MAINHOST."/images");
 ?>

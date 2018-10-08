@@ -55,8 +55,8 @@ if(count(get_included_files()) ==1)
 							<th class="w3-text-light-blue" style="text-align:left">Corporte</th>
 						</tr>
 						<?php
-							$stTrTitle = array("Amount", "Recovered", "Pax", "No of Requests","Number of Clients","Raised Invoice","Invoice Paid","Uninvoiced Records");
-							$stTrValue = array("amount", "recovered", "pax","request","noclients","raised_invoice","invoice_paid","uninv_records");
+							$stTrTitle = array("Amount", "Recovered", "Unpaid", "Pax", "No of Requests","Number of Clients","Raised Invoice","Invoice Paid","Uninvoiced Records");
+							$stTrValue = array("amount", "recovered", "thisarrear", "pax","request","noclients","raised_invoice","invoice_paid","uninv_records");
 							$stClassNames = array("w3-text-amber","w3-text-lime","w3-text-light-blue");
 
 							$streamTab = "";
@@ -190,62 +190,25 @@ if(count(get_included_files()) ==1)
 				</div>
 			</div>
 		</div>
+		<!-- Widget Area Starts-->
 		<div class="w3-third">
-			<div class="w3-margin w3-dark-gray w3-card-4 w3-round" style="overflow:hidden">
-				<div class="w3-row w3-center w3-tiny" style="background:rgba(0,0,0,0.4)">REVENUE GENERATOR</div>
-				<div class="w3-row w3-center w3-margin">
-					<?php
-					$revgenClass = array("w3-col w3-amber","w3-col w3-lime","w3-col w3-light-blue");
-						for($i=1;$i<4;$i++){
-								$perc = $monthSummary['stream'][$i]['revgen'];
-								$percVal = round($perc)."%";
-								if($perc<5)$percVal = "";
-								echo "<div class=\"".$revgenClass[$i-1]."\" style=\"width:$perc%\">$percVal</div>";
-						}
-					?>
-				</div>
-				<div class="w3-row w3-center w3-wide" style="margin-bottom:4px;width:100%">
-					<span class="w3-amber">&nbsp;&nbsp;</span>&nbsp;Cash
-					<span class="w3-lime">&nbsp;&nbsp;</span>&nbsp;Card
-					<span class="w3-light-blue">&nbsp;&nbsp;</span>&nbsp;Corporate
-				</div>
-			</div>
-			<div class="w3-margin w3-dark-gray w3-card-4 w3-round" style="overflow:hidden">
-				<div class="w3-row w3-center w3-tiny" style="background:rgba(0,0,0,0.4)">REQUEST GENERATOR</div>
-				<div class="w3-row w3-center w3-margin">
-					<div class="w3-col w3-amber" style="width:30%">30%</div>
-					<div class="w3-col w3-lime" style="width:68%">68%</div>
-					<div class="w3-col w3-light-blue" style="width:2%">2%</div>
-				</div>
-				<div class="w3-row w3-center w3-wide" style="margin-bottom:4px;width:100%">
-					<span class="w3-amber">&nbsp;&nbsp;</span>&nbsp;Cash
-					<span class="w3-lime">&nbsp;&nbsp;</span>&nbsp;Bank
-					<span class="w3-light-blue">&nbsp;&nbsp;</span>&nbsp;Corporate
-				</div>
-			</div>
-			<div class="w3-margin w3-dark-gray w3-card-4 w3-round" style="overflow:hidden">
-				<div class="w3-row w3-center w3-tiny" style="background:rgba(0,0,0,0.4)">pax generator</div>
-				<div class="w3-row w3-center" style="margin:3px 3px 3px 3px">
-					<div class="w3-col w3-amber" style="width:30%">30%</div>
-					<div class="w3-col w3-lime" style="width:68%">68%</div>
-					<div class="w3-col w3-light-blue" style="width:2%">2%</div>
-				</div>
-				<div class="w3-row w3-center w3-wide" style="margin-bottom:4px;width:100%">
-					<span class="w3-amber">&nbsp;&nbsp;</span>&nbsp;Cash
-					<span class="w3-lime">&nbsp;&nbsp;</span>&nbsp;Bank
-					<span class="w3-light-blue">&nbsp;&nbsp;</span>&nbsp;Corporate
-				</div>
-			</div>
+			<!-- ######REVENUE GENERATOR WIDGET###### -->
+					<?php performanceWidget($monthSummary['stream'],'revgen','REVENUE GENERATOR');?>
+			<!-- ######REQUEST GENERATOR WIDGET###### -->
+					<?php performanceWidget($monthSummary['stream'],'reqgen','REQUEST GENERATOR');?>
+			<!-- ######PAX GENERATOR WIDGET###### -->
+					<?php performanceWidget($monthSummary['stream'],'paxgen','PAX GENERATOR');?>
 		</div>
+		<!-- Widget Area Ends-->
 	</div> <!-- Upper Layer container ends-->
-			<div style="min-height:200px;max-height:80%;max-width:100%;position:relative;margin:4px" class="w3-margin w3-card-4 w3-lime w3-round">
+			<div style="min-height:200px;max-height:80%;max-width:100%;position:relative;" class="w3-margin w3-card-4 w3-lime w3-round">
 			<canvas id="bankSummary"></canvas>
 				<script>
 					var ctx = document.getElementById("bankSummary");
 					var bankSummary = new Chart(ctx, {
 						type: 'bar',
 						data:{
-							labels: [<?php echo $monthSummary['chartlable']?>],
+							labels: [<?php echo $monthSummary['chartlabel']?>],
 							datasets: [{
 								label: 'Spot Amount',
 								stack: 'Stack 0',
@@ -367,3 +330,25 @@ if(count(get_included_files()) ==1)
 			</div>
 	</div>
 	</div>
+<script>
+function setDBFlag(){
+	var loadFromDBForm = document.createElement("form");
+		loadFromDBForm.method = "POST";
+		loadFromDBForm.action = "";
+
+	var commandInput = document.createElement("input");
+		commandInput.type = "hidden";
+		commandInput.name = "dbload";
+		commandInput.value = true;
+		loadFromDBForm.appendChild(commandInput);
+
+	var dateInput = document.createElement("input");
+		dateInput.type = "hidden";
+		dateInput.name = "targetmonth";
+		dateInput.value = "<?php echo $_SESSION['performancemonth'];?>";
+		loadFromDBForm.appendChild(dateInput);
+
+	document.body.appendChild(loadFromDBForm);
+	loadFromDBForm.submit();
+}
+</script>

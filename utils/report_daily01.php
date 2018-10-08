@@ -1,7 +1,7 @@
 <?php
 $reportdate = date("Y-m-d");
 if(isset($_POST['reportdate'])){
-	
+
 	$reportdate = $_POST['reportdate'];
 }
 
@@ -37,31 +37,32 @@ $tabformat['3']['monsum'] = array('HEAD:Grand Total',NULL,'mon_tot_pax', 'mon_to
 $sumCats = array('Spot', 'Corporate','Bank');
 $paxtot =0; $amtot=0; $amrec=0; $amdue=0;
 for($i=1;$i<4;$i++){
-	
+
 	$drdata[$i]['mon_tot_pax'] = $drdata[$i]['bf_tot_pax'] + $drdata[$i]['day_tot_pax'];
 	$drdata[$i]['mon_tot_am'] = $drdata[$i]['bf_tot_am'] + $drdata[$i]['day_tot_am'];
 	$drdata[$i]['mon_tot_rec'] = $drdata[$i]['bf_tot_rec'] + $drdata[$i]['day_tot_rec'];
 	$drdata[$i]['mon_tot_due'] = $drdata[$i]['bf_tot_due'] + $drdata[$i]['day_tot_due'];
 	$catTabs[$i] = formatCats($drdata[$i], $tabformat[$i]);
-	
+
 	$sumDat[$i-1] = array($sumCats[$i-1],$drdata[$i]['mon_tot_pax'], $drdata[$i]['mon_tot_am'],$drdata[$i]['mon_tot_rec'],$drdata[$i]['mon_tot_due']);
 	$paxtot +=$drdata[$i]['mon_tot_pax']; $amtot+=$drdata[$i]['mon_tot_am']; $amrec+=$drdata[$i]['mon_tot_rec']; $amdue+=$drdata[$i]['mon_tot_due'];
 }
 $sumTot = array('Total', $paxtot, $amtot,$amrec,$amdue);
+$sumCatClass = array('w3-text-amber', 'w3-text-light-blue', 'w3-text-lime');
 $sumTabHeads = array('Category', 'No of Pax', 'Bill Amount','Amount Received','Amount Due');
 
-$sumTab = "<table>";
-$sumTab .= "<tr><td>".implode("</td><td>", $sumTabHeads)."</td></tr>";
+$sumTab = "<div class='w3-margin'><table style='border-collapse:collapse;background:#444;width:100%'>";
+$sumTab .= "<tr class='w3-dark-gray'><th>".implode("</th><th>", $sumTabHeads)."</th></tr>";
 //print_r($sumDat);
 for($i=0;$i<count($sumDat);$i++){
-		$sumTab .= "<tr><td>".implode("</td><td>",$sumDat[$i])."</td></tr>";
+		$sumTab .= "<tr style='border-bottom:1px solid rgba(255,255,255,0.08)' class='".$sumCatClass[$i]."'><td>".implode("</td><td>",$sumDat[$i])."</td></tr>";
 }
-$sumTab .= "<tr><td>".implode("</td><td>", $sumTot)."</td></tr>";
-$sumTab .= "</table>";
+$sumTab .= "<tr class='w3-blue-gray'><th>".implode("</th><th>", $sumTot)."</th></tr>";
+$sumTab .= "</table></div>";
 
 ////////////////////Preparing Entries Table////////////////////
 $entrtable = "<table class='w3-hoverable' style='width:100%;border-collapse:collapse' id='dayEntries'>";
-$entrtable .= "<tr class='w3-card w3-light-gray'>
+$entrtable .= "<tr class='w3-light-gray'>
 				<th>Name</th>
 				<th>Contact</th>
 				<th>Flight</th>
@@ -70,8 +71,9 @@ $entrtable .= "<tr class='w3-card w3-light-gray'>
 				<th>Dir</th>
 				<th>Req</th>
 				<th>Amount</th>
-				<th>Bank</th>
-				<th>Corporate</th>
+				<th class='bankKiller'>Bank</th>
+				<th class='cardKiller'>Card no</th>
+				<th class='corpKiollerr'>Corporate</th>
 				<th>
 					<select class='w3-light-gray' id='ctype_select' style='border:none' onchange='filterCtype()'>
 						<option value='All'>All Types</option>
@@ -90,10 +92,10 @@ $corps = getCorps($con);
 $result = $con->query($sql);
 $entries = array();
 if($result->num_rows>0){
-	
+
 	while($row=$result->fetch_assoc()){
 		$key = $row['flight_date']." ".$row['flight_time']."-".$row['id'];
-		$entries[$key] = $row; 
+		$entries[$key] = $row;
 	}
 	$entrtable = formatEntry($entrtable, $banks, $corps, $entries, $con);
 }
@@ -127,8 +129,8 @@ function formatCats($row, $format){
 			for($i=0;$i<$format['col'];$i++){
 				if(is_null($format['data'][$i])) $catagtable .= "<td></td>";
 				else $catagtable .= "<td>".$row['rec'][$j][$format['data'][$i]]."</td>";
-			}	
-			$catagtable .= "</tr>";	
+			}
+			$catagtable .= "</tr>";
 		}
 	}
 	######FORMATTING DAILY DATA SUM######
@@ -138,10 +140,10 @@ function formatCats($row, $format){
 		else {
 			$cellconfig = explode(":",$format['foot'][$i]);
 			if($cellconfig[0]=='HEAD') $catagtable .= "<th>".$cellconfig[1]."</th>";
-			else 
+			else
 			$catagtable .= "<th>".$row[$format['foot'][$i]]."</th>";
 		}
-	}	
+	}
 	$catagtable .= "</tr>";
 	######FORMATTING MONTHLY DATA SUM######
 	$catagtable .= "<tr class='w3-pale-green'>";
@@ -150,12 +152,12 @@ function formatCats($row, $format){
 		else {
 			$cellconfig = explode(":",$format['monsum'][$i]);
 			if($cellconfig[0]=='HEAD') $catagtable .= "<td>".$cellconfig[1]."</td>";
-			else 
+			else
 			$catagtable .= "<td>".$row[$format['monsum'][$i]]."</td>";
 		}
-	}	
+	}
 	$catagtable .= "</tr>";
-	
+
 	$catagtable .= "</table>";
 	return $catagtable;
 }
@@ -168,7 +170,7 @@ function findBalFor($reportdate, $con){
 	$corps = getCorps($con);
 	$bfsql = "SELECT * from `requests` WHERE `flight_date` BETWEEN '$startdate' AND '$reportdate' ORDER BY `flight_date`, `flight_time`";
 	$monthObj = new DBTables($con, 'requests');
-	$md = $monthObj->getSqlResult($bfsql); //Month Data 
+	$md = $monthObj->getSqlResult($bfsql); //Month Data
 	$daily_count = 0;
 	$count_1 = 0;
 	$count_2 = 0;
@@ -179,13 +181,13 @@ function findBalFor($reportdate, $con){
 		$data[$j]['day_tot_am'] = 0;
 		$data[$j]['day_tot_rec'] = 0;
 		$data[$j]['day_tot_due'] = 0;
-		
+
 		$data[$j]['bf_tot_pax'] = 0;
 		$data[$j]['bf_tot_am'] = 0;
 		$data[$j]['bf_tot_rec'] = 0;
 		$data[$j]['bf_tot_due'] = 0;
 	}
-	
+
 	for($i=0;$i<count($md);$i++){
 		$type_count = ${"count_".$md[$i]['client_type']};
 		if($md[$i]['flight_date'] == $reportdate){
@@ -197,7 +199,7 @@ function findBalFor($reportdate, $con){
 			$data[$md[$i]['client_type']]['rec'][$type_count] = $data['daily'][$daily_count];
 			$data['daily'][$daily_count]['Contact'] = $md[$i]['name'];
 			$data['daily'][$daily_count++]['Assigned'] = $md[$i]['assigned_to'];
-			
+
 			if($md[$i]['paid'] == 1){
 				$data[$md[$i]['client_type']]['rec'][$type_count]['Amount Received'] = $md[$i]['amount'];
 				$data[$md[$i]['client_type']]['rec'][$type_count]['Amount due'] = 0;
@@ -208,7 +210,7 @@ function findBalFor($reportdate, $con){
 				$data[$md[$i]['client_type']]['rec'][$type_count]['Amount Received'] = 0;
 				$data[$md[$i]['client_type']]['rec'][$type_count]['Amount due'] = $md[$i]['amount'];
 				$data[$md[$i]['client_type']]['day_tot_am'] += $md[$i]['amount'];
-				$data[$md[$i]['client_type']]['day_tot_due'] += $md[$i]['amount'];				
+				$data[$md[$i]['client_type']]['day_tot_due'] += $md[$i]['amount'];
 			}
 			$data[$md[$i]['client_type']]['day_tot_pax'] += $md[$i]['no_of_passengers'];
 			${"count_".$md[$i]['client_type']}++;
@@ -220,10 +222,10 @@ function findBalFor($reportdate, $con){
 			}
 			else {
 				$data[$md[$i]['client_type']]['bf_tot_am'] += $md[$i]['amount'];
-				$data[$md[$i]['client_type']]['bf_tot_due'] += $md[$i]['amount'];				
+				$data[$md[$i]['client_type']]['bf_tot_due'] += $md[$i]['amount'];
 			}
 			$data[$md[$i]['client_type']]['bf_tot_pax'] += $md[$i]['no_of_passengers'];
-		}			
+		}
 	}
 //	print_r($data);
 	return $data;
@@ -263,7 +265,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 		$i++;
 		if($entry['arrival_departure']==0) $dir = "Arrival";
 		else $dir = "Departure";
-		
+
 		if($entry['requirements'] != NULL) {
 			$req = getRequirements($entry['requirements'], $con);
 			$spreq = '<span class="w3-badge w3-tooltip w3-round">'.$req['num'].'<span style="position:absolute;left:-10px;'.$tooltippos.';width:150px;text-align:left;z-index:100"
@@ -271,7 +273,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$entry['req_item'] = $req['req_item'];
 		}
 		else $spreq = "None";
-		
+
 		if($entry['mode_of_payment']==1) {
 			$mop = "Cash";
 			$spotrec++;
@@ -284,26 +286,29 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$corprec++;
 			$mop = "Due";
 		}
-		
+
 		if($entry['client_type'] == "1"){
 			$type = "Spot";
 			$bank = "-";
 			$corp = "-";
+			$card_no = "-";
 		}
 		if($entry['client_type'] == "2"){
 			$type = "Corporate";
 			$bank = "-";
+			$card_no = "-";
 			$corp = $corps[$entry['corporate_id']];
 			$entry['corporate_name'] = $corp;
 		}
 		if($entry['client_type'] == "3"){
 			$type = "Card";
 			$bank = $banks[$entry['bank_id']];
+			$card_no = $entry['card_no'];
 			$corp = "-";
 			$entry['bank_code'] = $bank;
-		}		
-		
-		$entrtable .= "<tr>
+		}
+
+		$entrtable .= "<tr style='border-bottom:1px solid rgba(0,0,0,0.1)'>
 						<td>".$entry['name']."</td>
 						<td>".$entry['contact']."</td>
 						<td>".$entry['flight_no']."</td>
@@ -313,6 +318,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 						<td>".$spreq."</td>
 						<td>".$entry['amount']."</td>
 						<td>".$bank."</td>
+						<td>".$card_no."</td>
 						<td>".$corp."</td>
 						<td>".$type."</td>
 						<td><div id='asgn-".$entry['id']."' contenteditable='true' spellcheck='false'
@@ -324,7 +330,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 		$totam += $entry['amount'];
 		$count++;
 	}
-	$entrtable .= "<tr class='w3-gray'>
+	$entrtable .= "<tr class='w3-light-gray'>
 					<th colspan='4'>Total Records: $count, Spot: $spotrec, Card: $cardrec, Corporate: $corprec</th>
 					<th>$totpax</th>
 					<td colspan=2></td>
@@ -365,10 +371,10 @@ function getRequirements($id, $con){
 			$req['req_item'][$req['num']+1] = $row['other'];
 			$req['num']++;
 			$req['des'] .= "<li>".$row['other']."</li>";
-		}		
+		}
 		$req['des'] .= "</ul>";
 	}
-	
+
 	return $req;
 }
 ?>

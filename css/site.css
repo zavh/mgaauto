@@ -32,7 +32,22 @@ a.viewmode.active{
     text-decoration:none;
     outline: none;
 }
-.nodec:hover{color:white;}
+.dot {
+    height: 12px;
+    width: 12px;
+		line-height:12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-large {
+    height: 30px;
+    width: 30px;
+		line-height:30px;
+    //background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+.nodec:hover{color:#9fd142;}
 .dayreport{
     max-height:25vh;
     max-width: :33vh;
@@ -103,18 +118,18 @@ However, delay the fade out process for 2.5 seconds */
 
 .report-selector{
     height:auto;
-    width:250px;
+    width:300px;
     left:18px;
-    top:-185px;
+    top:-300px;
     position:absolute;
     background:#fff;
     border:1px solid #999;
     transition: 0.3s;
-    z-index: 1;
+    z-index: 10;
 }
 
 .report-selector-toggle {
-    background-color: #fff;
+    background-color: #eee;
     border: none;
     padding: 1px 1px;
     text-align: center;
@@ -128,7 +143,7 @@ However, delay the fade out process for 2.5 seconds */
     top:-20px;
     padding:5px;
     position:absolute;
-    width:250px;
+    width:300px;
     //height:40px;
     background:#fff;
     display:none;
@@ -152,12 +167,13 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-#monthreportdashTitle {
+.pagetitle {
     text-align:left;
-    padding-left: 3px;
-    padding-top: 3px;
+    padding-left: 2px;
+    padding-top: 2px;
+		height:20px;
 }
-#monthreportsearch { text-align:right; }
+.monthreportsearch { text-align:right; }
 
 @media only screen and (max-width: 400px) {
   .usertable-big  {display: none;}
@@ -169,14 +185,92 @@ input[type=number]::-webkit-outer-spin-button {
   .usertable-small { display: none; }  /*hide on big screens */
 }
 @media only screen and (max-width: 600px) {
-  #monthreportsearch {
+  .monthreportsearch {
       text-align:center;
       background: #555;
     }
-  #monthreportdashTitle {
+  .pagetitle {
       text-align:center;
       background: #444;
       padding-left: 0px;
-      padding-top: 0px;
+			padding-top: 0px;
+			height:auto;
     }
+}
+.darkmenu{
+	background-color:rgba(0,0,0,0.4);
+	height:21px;
+	padding-top:2px;
+	position:relative;
+}
+.darkermenu{
+	background-color:rgba(0,0,0,0.6);
+	height:21px;
+	padding-top:2px;
+	position:relative;
+}
+.darkestmenu{
+	background-color:rgba(0,0,0,0.8);
+	height:21px;
+	padding-top:2px;
+	position:relative;
+}
+
+.form-group {
+  position:relative;
+  margin-top: 16px;
+	box-shadow: 0 1px 0 0 #e5e5e5;
+}
+.form-group-erred {
+	position:relative;
+	margin-top: 16px;
+	-webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+	-webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+	animation-name: error;
+	animation-duration: 3s;
+	box-shadow: 0 1px 0 0 #e5e5e5;
+}
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes error {
+    from {box-shadow: 0 1px 0 0 #ff0000;}
+    to {box-shadow: 0 1px 0 0 #e5e5e5;}
+}
+
+/* Standard syntax */
+@keyframes error {
+    from {box-shadow: 0 1px 0 0 #ff0000;}
+    to {box-shadow: 0 1px 0 0 #e5e5e5;}
+}
+
+
+.form-label {
+  position: absolute;
+  left: 16px;
+  top: 10px;
+  color: #999;
+  background-color: #fff;
+  z-index: 2;
+  transition: transform 150ms ease-out, font-size 150ms ease-out;
+}
+
+.focused .form-label {
+  transform: translateY(-125%);
+  font-size: .75em;
+}
+
+.form-input {
+  position: relative;
+  padding: 12px 0px 5px 16px;
+  width: 100%;
+  outline: 0;
+  border: 0;
+  transition: box-shadow 150ms ease-out;
+
+  &:focus {
+    box-shadow: 0 2px 0 0 blue;
+  }
+}
+
+.form-input.filled {
+  box-shadow: 0 2px 0 0 lightgreen;
 }

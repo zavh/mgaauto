@@ -1,5 +1,5 @@
-<?php 
-if(count(get_included_files()) ==1) 
+<?php
+if(count(get_included_files()) ==1)
 	include("index.php");
 session_start();
 if(isset($_SESSION['loggedin'])){
@@ -19,14 +19,15 @@ else exit;
 ?>
 <!DOCTYPE html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 	<head>
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/w3s.css">
 		<link rel="stylesheet" href="<?php echo CSSDIR;?>/autocomplete.css">
-		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.0">
+		<link rel="stylesheet" href="<?php echo CSSDIR;?>/site.css?version=1.0.7">
 		<script src="<?php echo JSDIR;?>/autocomplete.js"></script>
 		<title> MGA Voucher Application</title>
-		<script src="<?php echo JSDIR;?>/site.js"></script>
+		<script src="<?php echo JSDIR;?>/site.js?version=0.1.5"></script>
 	</head>
-	
-	<body onclick="upActivityCounter()" onload="upActivityCounter()">
+
+	<body onclick="upActivityCounter()" onload="upActivityCounter()" class="w3-gray">
 	<input type='hidden' id='lastActiveTime' value=0>
