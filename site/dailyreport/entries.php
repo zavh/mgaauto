@@ -121,7 +121,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$bank = "-";
 			$corp = "-";
 			$card_no = "-";
-			$trclass = 'w3-text-amber';
+			$trclass = 'w3-text-purple';
 		}
 		if($entry['client_type'] == "2"){
 			$type = "Corporate";
@@ -129,7 +129,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$card_no = "-";
 			$corp = $corps[$entry['corporate_id']];
 			$entry['corporate_name'] = $corp;
-			$trclass = 'w3-text-light-blue';
+			$trclass = 'w3-text-indigo';
 		}
 		if($entry['client_type'] == "3"){
 			$type = "Card";
@@ -137,7 +137,7 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			$card_no = $entry['card_no'];
 			$corp = "-";
 			$entry['bank_code'] = $bank;
-			$trclass = 'w3-text-lime';
+			$trclass = 'w3-text-teal';
 		}
 		if($entry['invoice']<0){
 			$type = "Cancelled";
@@ -160,11 +160,11 @@ function formatEntry($entrtable, $banks, $corps, $entries, $con){
 			onclick=\"alert('This entry has been invoiced. You need to remove the invoice first.')\"
 			title='No Action Allowed'>N</a>";
 		}
-		$entrtable .= "<tr style='border-bottom:1px solid rgba(255,255,255,0.1)' class='$trclass w3-hover-black'>
+		$entrtable .= "<tr style='border-bottom:1px solid rgba(0,0,0,0.2)' class='$trclass w3-hover-black'>
 						<td>".$entry['name']."</td>
 						<td>".$entry['contact']."</td>
 						<td>".$entry['flight_no']."</td>
-						<td>".substr($datetime,0,19)."</td>
+						<td>".date("d-m-Y H:m:s", strtotime(substr($datetime,0,19)))."</td>
 						<td>".$entry['no_of_passengers']."</td>
 						<td>".$dir."</td>
 						<td>".$spreq."</td>

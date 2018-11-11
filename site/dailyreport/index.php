@@ -59,9 +59,12 @@
 	#dayreportmenu {
       display :  none;
     }
-		.entryAction{
-			display :  none;
-		}
+	.entryAction{
+		display :  none;
+	}
+	.entryreport{
+		max-height:none;
+	}
 }
 </style>
 	<!-- Page background or Page Wrapper -->
@@ -121,11 +124,11 @@
 			</div>
 			<div class=" w3-twothird " id="record">
 				<div class=" w3-card" style='margin:2px 4px 8px 4px'>
-					<div class="w3-center w3-responsive entryreport" style='background:#333'>
-						<span class='w3-text-white'>
+					<div class="w3-center w3-responsive entryreport" style='background:#eee'>
+						<div class='w3-text-white' style='width:100%;background:#666'>
 							Monthly <input type='radio' name='mode' value='monthly' onclick='entryMode(this);'>
 							Daily <input type='radio' name='mode' value='daily' onclick='entryMode(this);' checked>
-						</span>
+						</div>
 						<?php //echo $entrtable; ?>
 						<div id="entryrecordshow">
 							<?php include("entries.php"); ?>
